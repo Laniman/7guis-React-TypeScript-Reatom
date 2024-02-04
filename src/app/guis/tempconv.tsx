@@ -1,10 +1,9 @@
 import * as React from 'react'
 import {Component} from 'react'
-import {observer} from 'mobx-react'
-import {observable} from 'mobx'
-import {useAtom} from '@reatom/npm-react'
+import { atom } from '@reatom/framework'
+import {reatomComponent, useAtom} from '@reatom/npm-react'
 
-import {Comp, Flex, Label, TextInput} from '../basic'
+import {Flex, Label, TextInput} from '../basic'
 
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n)
@@ -83,48 +82,32 @@ export const TempConvManual = () => {
   );
 };
 
-/*
-Code a bit contrived just to make use of auto propagation and to show how to
-stop circular propagation. Would be cool to have a primitive/option to prevent
-circular propagation automatically if that's even possible.
+const celsiusAtom = atom('');
+const fahrenheitAtom = atom('');
 
-In general, auto propagation is more mistake-resilient as you don't have to
-be careful to always update the state via methods that manually propagate
-the changes as is the case for TempConvManual.handleChangeCelsius. In this
-example, the advantages do not matter since it is too small.
-*/
+celsiusAtom.onChange((ctx, value) => {
+  if (!isNumeric(value)) return;
+  const c = parseFloat(value);
+  fahrenheitAtom(ctx, Math.round(c * (9 / 5) + 32).toString());
+});
 
-@observer
-export class TempConvAuto extends Comp {
-  @observable celsius = ''
-  @observable fahrenheit = ''
+fahrenheitAtom.onChange((ctx, value) => {
+  if (!isNumeric(value)) return;
+  const f = parseFloat(value);
+  celsiusAtom(ctx, Math.round((f - 32) * (5 / 9)).toString());
+});
 
-  componentDidMount() {
-    let prevF = null
-    this.autorun(() => {
-      if (this.fahrenheit === prevF) return // stop propagation
-      prevF = this.fahrenheit
-      if (!isNumeric(this.fahrenheit)) return
-      const f = parseFloat(this.fahrenheit)
-      prevC = this.celsius = Math.round((f - 32) * (5 / 9)).toString()
-    })
-
-    let prevC = null
-    this.autorun(() => {
-      if (this.celsius === prevC) return // stop propagation
-      prevC = this.celsius
-      if (!isNumeric(this.celsius)) return
-      const c = parseFloat(this.celsius)
-      prevF = this.fahrenheit = Math.round(c * (9/5) + 32).toString()
-    })
-  }
-
-  render() {
-    return <TempConvPure
-      celsius={this.celsius}
-      fahrenheit={this.fahrenheit}
-      onChangeCelsius={(e) => this.celsius = e.target.value}
-      onChangeFahrenheit={(e) => this.fahrenheit = e.target.value}
+export const TempConvAuto = reatomComponent(({ ctx }) => {
+  return (
+    <TempConvPure
+      celsius={ctx.spy(celsiusAtom)}
+      fahrenheit={ctx.spy(fahrenheitAtom)}
+      onChangeCelsius={(e) => {
+        celsiusAtom(ctx, e.target.value);
+      }}
+      onChangeFahrenheit={(e) => {
+        fahrenheitAtom(ctx, e.target.value);
+      }}
     />
-  }
-}
+  );
+});
