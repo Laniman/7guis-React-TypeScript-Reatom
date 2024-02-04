@@ -2,13 +2,14 @@ import * as React from 'react'
 import {Component} from 'react'
 import {observer} from 'mobx-react'
 import {observable} from 'mobx'
+import {useAtom} from '@reatom/npm-react'
+
 import {Comp, Flex, Label, TextInput} from '../basic'
 
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n)
 }
 
-@observer
 class TempConvPure extends Component<{
   celsius: string
   fahrenheit: string
@@ -44,34 +45,43 @@ class TempConvPure extends Component<{
   }
 }
 
-@observer
-export class TempConvManual extends Component {
-  @observable celsius = ''
-  @observable fahrenheit = ''
+export const TempConvManual = () => {
+  const [celsius, setCelsius] = useAtom('');
+  const [fahrenheit, setFahrenheit] = useAtom('');
 
-  handleChangeCelsius = (e) => {
-    this.celsius = e.target.value
-    if (!isNumeric(this.celsius)) return
-    const c = parseFloat(this.celsius)
-    this.fahrenheit = Math.round(c * (9/5) + 32).toString()
-  }
+  const handleChangeCelsius = React.useCallback(
+    (event) => {
+      const value = event.currentTarget.value;
+      setCelsius(value);
+      if (!isNumeric(value)) return;
+      const c = parseFloat(value);
+      const nextFahrenheit = Math.round(c * (9 / 5) + 32).toString();
+      setFahrenheit(nextFahrenheit);
+    },
+    [setCelsius, setFahrenheit],
+  );
 
-  handleChangeFahrenheit = (e) => {
-    this.fahrenheit = e.target.value
-    if (!isNumeric(this.fahrenheit)) return
-    const f = parseFloat(this.fahrenheit)
-    this.celsius = Math.round((f - 32) * (5 / 9)).toString()
-  }
+  const handleChangeFahrenheit = React.useCallback(
+    (event) => {
+      const value = event.currentTarget.value;
+      setFahrenheit(value);
+      if (!isNumeric(value)) return;
+      const f = parseFloat(value);
+      const nextCelsius = Math.round((f - 32) * (5 / 9)).toString();
+      setCelsius(nextCelsius);
+    },
+    [setFahrenheit, setCelsius],
+  );
 
-  render() {
-    return <TempConvPure
-      celsius={this.celsius}
-      fahrenheit={this.fahrenheit}
-      onChangeCelsius={this.handleChangeCelsius}
-      onChangeFahrenheit={this.handleChangeFahrenheit}
+  return (
+    <TempConvPure
+      celsius={celsius}
+      fahrenheit={fahrenheit}
+      onChangeCelsius={handleChangeCelsius}
+      onChangeFahrenheit={handleChangeFahrenheit}
     />
-  }
-}
+  );
+};
 
 /*
 Code a bit contrived just to make use of auto propagation and to show how to
