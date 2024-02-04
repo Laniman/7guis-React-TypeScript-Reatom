@@ -1,5 +1,7 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { reatomContext } from '@reatom/npm-react'
+import { createCtx } from '@reatom/framework'
 import {observer} from 'mobx-react'
 import MobxDevTools from 'mobx-react-devtools'
 import {css, cx} from 'emotion'
@@ -21,6 +23,8 @@ const theme = {
     10, 12, 13, 16, 20, 24, 32, 48, 64
   ],
 }
+
+const ctx = createCtx()
 
 @observer
 class App extends React.Component<{
@@ -53,7 +57,7 @@ class App extends React.Component<{
             <Fill/>
             <a
               target='_blank'
-              href={`https://github.com/eugenkiss/7guis-React-TypeScript-MobX/blob/master/src/app/guis/${filename}`}
+              href={`https://github.com/Laniman/7guis-React-TypeScript-Reatom/blob/master/src/app/guis/${filename}`}
             >
               <FontAwesome color='#999' icon={faFileCode}/>
             </a>
@@ -68,6 +72,7 @@ class App extends React.Component<{
 
   render() {
     return (
+      <reatomContext.Provider value={ctx}>
       <ThemeProvider theme={theme}>
         <div
           className={css`
@@ -81,13 +86,13 @@ class App extends React.Component<{
           <Box mb={4}/>
           <Box f={3}>
             This is a live version of an implementation
-            {' '}(<a href='https://github.com/eugenkiss/7guis-React-TypeScript-MobX'>source</a>){' '}
+            {' '}(<a href='https://github.com/Laniman/7guis-React-TypeScript-Reatom'>source</a>){' '}
             of
             {' '}<a href='https://eugenkiss.github.io/7guis/'>7GUIs</a>{' '}
             with
             {' '}<a href='https://reactjs.org/'>React</a>,{' '}
             {' '}<a href='https://www.typescriptlang.org'>TypeScript</a> and{' '}
-            {' '}<a href='https://mobx.js.org/'>MobX</a>.{' '}
+            {' '}<a href='https://www.reatom.dev/'>Reatom</a>.{' '}
           </Box>
           <Box mb={4}/>
           {this.renderGui('Counter', 'counter.tsx', <Counter/>)}
@@ -100,8 +105,9 @@ class App extends React.Component<{
           {this.renderGui('Cells', 'cells/cells.tsx', <Cells/>)}
         </div>
       </ThemeProvider>
+      </reatomContext.Provider>
     )
   }
 }
-
-ReactDOM.render(<App/>, document.getElementById('root'))
+const root = createRoot(document.getElementById('root'));
+root.render(<App/>);

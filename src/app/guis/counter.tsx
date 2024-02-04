@@ -4,15 +4,15 @@
 // of course.
 
 import * as React from 'react'
-import {observer} from 'mobx-react'
-import {observable} from 'mobx'
+import { atom } from '@reatom/framework'
+import { reatomComponent } from '@reatom/npm-react'
 import {Button, Flex, Label} from '../basic'
 
-const count = observable.box(0)
+const countAtom = atom(0);
 
-export const Counter = observer(() =>
+export const Counter = reatomComponent(({ ctx }) =>
   <Flex alignItems='center' minWidth='200px'>
-    <Label flex='1'>{count.get()}</Label>
-    <Button flex='1' onClick={() => count.set(count.get() + 1)}>Count</Button>
+    <Label flex='1'>{ctx.spy(countAtom)}</Label>
+    <Button flex='1' onClick={() => countAtom(ctx, (count) => count + 1)}>Count</Button>
   </Flex>
 )
