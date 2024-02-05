@@ -3,7 +3,7 @@ Implementation of [7GUIs](http://eugenkiss.github.io/7guis/) with
 [TypeScript](https://www.typescriptlang.org/) and
 [Reatom](https://www.reatom.dev/).
 
-[//]: # ([**Live version**])
+[**Live version**](https://laniman.github.io/7guis-React-TypeScript-Reatom/)
 
 Run `npm run dev` for development mode.
 

@@ -82,7 +82,7 @@ class App extends React.Component<{
           padding: 1.5rem 1.125rem;
         `}>
           <MobxDevTools position={{bottom: 0, right: 0}}/>
-          <h1>7GUIs in React/TypeScript/MobX</h1>
+          <h1>7GUIs in React/TypeScript/Reatom</h1>
           <Box mb={4}/>
           <Box f={3}>
             This is a live version of an implementation
