@@ -1,15 +1,10 @@
 import * as React from 'react'
 import {Component} from 'react'
-import {observer} from 'mobx-react'
-import {computed, observable} from 'mobx'
+import { reatomComponent, useAtom } from '@reatom/npm-react';
+import { mapState } from '@reatom/lens'
 import {css} from 'emotion'
-import {DateTime} from 'luxon'
+import { reatomTimer } from '@reatom/timer'
 import {Box, Button, Flex, Label, Stack, VFlex} from '../basic'
-import {now} from 'mobx-utils'
-
-interface ReadOnlyObs<T> {
-    get(): T;
-}
 
 function clamp(num, min, max) {
   return num <= min ? min : num >= max ? max : num;
@@ -18,58 +13,80 @@ function clamp(num, min, max) {
 const padder = <Label className={css`visibility: hidden`}>Elapsed Time:{' '}</Label>
 
 const MAX = 30000
+const INTERVAL = 100
 
-@observer
-export class Timer extends Component {
+const timerAtom = reatomTimer({
+  name: 'timer',
+  interval: INTERVAL,
+  delayMultiplier: 1,
+  progressPrecision: 1,
+  resetProgress: false,
+})
 
-  @observable start = new Date().getTime()
-  readonly elapsed = computed(() => {
-    const max = this.max.get()
-    if (new Date().getTime() - this.start >= max) return max
-    return clamp(now(100) - this.start, 0, max)
-  })
-  readonly max = observable.box(MAX / 2)
+const nowAtom = timerAtom.pipe(
+  mapState(() => new Date().getTime()),
+);
 
-  render() {
-    return (
-      <VFlex
-        minWidth='350px'
-        vspace={1}
-      >
-        <GaugeTime max={this.max} value={this.elapsed}/>
-        <TextTime value={this.elapsed}/>
-        <Flex alignItems='center'>
-          <Stack>
-            {padder}
-            <Label>Duration:{' '}</Label>
-          </Stack>
-          <Box mr={1}/>
-          <input
-            type='range'
-            min={0}
-            max={MAX}
-            value={this.max.get()}
-            onChange={(e) => this.max.set(Math.max(1, parseInt(e.target.value)))}
-            className={css`
+export const Timer = reatomComponent(({ ctx }) => {
+  const [max, setMax, maxAtom] = useAtom(MAX / 2);
+  const [, setStart, startAtom] = useAtom(new Date().getTime());
+
+  const [elapsed] = useAtom((ctx) => {
+    const max = ctx.spy(maxAtom);
+    const start = ctx.spy(startAtom);
+    if (new Date().getTime() - start >= max) return max;
+    const now = ctx.spy(nowAtom);
+    return clamp(now - start, 0, max)
+  });
+
+  React.useEffect(() => {
+    if (max <= INTERVAL) {
+      timerAtom.stopTimer(ctx);
+    } else {
+      void timerAtom.startTimer(ctx, max);
+    }
+  }, [max]);
+
+  return (
+    <VFlex
+      minWidth='350px'
+      vspace={1}
+    >
+      <GaugeTime max={max} value={elapsed}/>
+      <TextTime value={elapsed}/>
+      <Flex alignItems='center'>
+        <Stack>
+          {padder}
+          <Label>Duration:{' '}</Label>
+        </Stack>
+        <Box mr={1}/>
+        <input
+          type='range'
+          min={0}
+          max={MAX}
+          value={max}
+          onChange={(e) => setMax(Math.max(1, parseInt(e.target.value)))}
+          className={css`
             flex: 1;
           `}/>
-        </Flex>
-        <Button
-          onClick={() => this.start = new Date().getTime()}
-        >
-          Reset Timer
-        </Button>
-      </VFlex>
-    )
-  }
-}
+      </Flex>
+      <Button
+        onClick={() => {
+          setStart(new Date().getTime())
+          void timerAtom.startTimer(ctx, Math.max(max, INTERVAL));
+        }}
+      >
+        Reset Timer
+      </Button>
+    </VFlex>
+  )
+});
 
-@observer
 class TextTime extends Component<{
-  value: ReadOnlyObs<number>
+  value: number
 }> {
   render() {
-    const value = this.props.value.get()
+    const value = this.props.value
     const seconds = Math.floor(value / 1000)
     const dezipart = Math.floor(value / 100) % 10
     const formatted = `${seconds}.${dezipart}s`
@@ -82,10 +99,9 @@ class TextTime extends Component<{
   }
 }
 
-@observer
 class GaugeTime extends Component<{
-  value: ReadOnlyObs<number>
-  max: ReadOnlyObs<number>
+  value: number,
+  max: number,
 }> {
   render() {
     const { value, max } = this.props
@@ -94,8 +110,8 @@ class GaugeTime extends Component<{
         <Label>Elapsed Time:{' '}</Label>
         <Box mr={1}/>
         <meter
-          min={0} max={max.get()}
-          value={value.get()}
+          min={0} max={max}
+          value={value}
           className={css`
           flex: 1;
         `}/>
