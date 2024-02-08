@@ -84,6 +84,8 @@ const stopChangeDiameterAction = action((ctx, initial: number, d: number) => {
   circle.diameter(ctx, initial);
   const next = reatomCircle(ctx.get(circle.x), ctx.get(circle.y), d);
   circlesAtom.with(ctx, index, next);
+  selectedAtom(ctx, next);
+  hoveredAtom(ctx, next);
 });
 
 export const CircleDrawerTraditional = reatomComponent(({ ctx }) => {

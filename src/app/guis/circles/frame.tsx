@@ -16,10 +16,10 @@ const CircleComp = reatomComponent<CircleCompProps>(({ ctx, ...props }) => {
   return (
     <Box
       position="absolute"
-      left={ctx.get(circle.x)}
-      top={ctx.get(circle.y)}
-      width={ctx.get(circle.diameter)}
-      height={ctx.get(circle.diameter)}
+      left={ctx.spy(circle.x)}
+      top={ctx.spy(circle.y)}
+      width={ctx.spy(circle.diameter)}
+      height={ctx.spy(circle.diameter)}
       border="1px solid #333"
       borderRadius={100}
       style={{
