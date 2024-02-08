@@ -1,247 +1,243 @@
-import * as React from 'react'
-import {Component} from 'react'
-import ReactDOM from 'react-dom'
-import {observer} from 'mobx-react'
-import {action, IComputedValue, IObservableValue, observable} from 'mobx'
-import {css} from 'emotion'
-import {DateTime} from 'luxon'
-import {Box, BoxClickable, Button, Comp, Flex, VFlex} from '../../basic'
-import {ICircle} from './model'
+import React from 'react';
+import { css } from 'emotion';
+import { Box, BoxClickable, Button, Flex, VFlex } from '../../basic';
+import { Circle } from './model';
+import { reatomComponent } from '@reatom/npm-react';
+import { atom, AtomMut } from '@reatom/framework';
+import ReactDOM from 'react-dom';
 
-@observer
-class CircleComp extends Component<{
-  circle: ICircle
-  getActive: (c: ICircle) => boolean
-}> {
-  render() {
-    const { circle, getActive } = this.props
-    return (
-      <Box
-        position='absolute'
-        left={circle.x}
-        top={circle.y}
-        width={circle.diameter}
-        height={circle.diameter}
-        border='1px solid #333'
-        borderRadius={100}
-        style={{
-          transform: 'translate(-50%, -50%)',
-          background: getActive(circle) ? '#eee' : undefined,
-        }}
-      />
-    )
-  }
+interface CircleCompProps {
+  circle: Circle;
 }
 
-@observer
-export class CircleDrawerPure extends Comp<{
-  circles: Array<ICircle>
-  inContextMode: IObservableValue<Boolean>
-  onMouseMove: (x: number, y: number) => void
-  onMouseLeave: () => void
-  onCanvasClick: (x: number, y: number) => void
-  onCircleClick: (c: ICircle) => void
-  onAdjustClick: () => void
-  getInitialDiameter: () => number
-  getCircleActive: (c: ICircle) => boolean
-  onDiameterChange: (d: number) => void
-  onDiameterRelease: (initial: number, d: number) => void
-  onUndo: () => void
-  onRedo: () => void
-  canUndo: IComputedValue<Boolean>
-  canRedo: IComputedValue<Boolean>
-}> {
+const CircleComp = reatomComponent<CircleCompProps>(({ ctx, ...props }) => {
+  const { circle } = props;
 
-  canvasRef = null
+  return (
+    <Box
+      position="absolute"
+      left={ctx.get(circle.x)}
+      top={ctx.get(circle.y)}
+      width={ctx.get(circle.diameter)}
+      height={ctx.get(circle.diameter)}
+      border="1px solid #333"
+      borderRadius={100}
+      style={{
+        transform: 'translate(-50%, -50%)',
+        background: ctx.spy(circle.active) ? '#eee' : undefined,
+      }}
+    />
+  );
+});
 
-  contextMenuRef = null
-  @observable contextMenuVisible = false
-  @observable contextMenuX = 0
-  @observable contextMenuY = 0
+interface CircleDrawerPureProps {
+  circles: Array<Circle>;
+  inContextMode: AtomMut<boolean>;
+  onMouseMove: (x: number, y: number) => void;
+  onMouseLeave: () => void;
+  onCanvasClick: (x: number, y: number) => void;
+  onCircleClick: (c: Circle) => void;
+  onAdjustClick: () => void;
+  getInitialDiameter: () => number;
+  onDiameterChange: (d: number) => void;
+  onDiameterRelease: (initial: number, d: number) => void;
+  getClosest: (x: number, y: number) => Circle;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+}
 
-  diameterDialogRef = null
-  @observable diameterDialogVisible = false
-  @observable diameterDialogX = 0
-  @observable diameterDialogY = 0
-  @observable diameter = 0
-  initialDiameter: number = null
+const contextMenuVisibleAtom = atom(false);
+const contextMenuXAtom = atom(0);
+const contextMenuYAtom = atom(0);
 
-  componentDidMount() {
-    this.autorun(() => {
-      this.props.inContextMode.set(this.contextMenuVisible || this.diameterDialogVisible)
-    })
-    document.addEventListener('click', this.handleDocumentContextMenuClick, true)
-    document.addEventListener('click', this.handleDocumentDialogClick, true)
-  }
+const diameterDialogVisibleAtom = atom(false);
+const diameterDialogXAtom = atom(0);
+const diameterDialogYAtom = atom(0);
+const diameterAtom = atom(0);
 
-  componentWillUnmount() {
-    super.componentWillUnmount()
-    document.removeEventListener('click', this.handleDocumentContextMenuClick, true)
-    document.removeEventListener('click', this.handleDocumentDialogClick, true)
-  }
+export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, ...props }) => {
+  const canvasRef = React.useRef(null);
+  const contextMenuRef = React.useRef(null);
+  const diameterDialogRef = React.useRef(null);
+  const initialDiameter = React.useRef<number>(null);
 
-  getClosest(x: number, y: number): ICircle {
-    let circle = null
-    let minDist = Number.MAX_VALUE
-    for (const c of this.props.circles) {
-      const d = Math.sqrt(Math.pow(x - c.x, 2) + Math.pow(y - c.y, 2))
-      if (d <= c.diameter / 2 && d < minDist) {
-          circle = c
-          minDist = d
-      }
+  const contextMenuVisible = ctx.spy(contextMenuVisibleAtom);
+  const contextMenuX = ctx.spy(contextMenuXAtom);
+  const contextMenuY = ctx.spy(contextMenuYAtom);
+
+  const diameterDialogVisible = ctx.spy(diameterDialogVisibleAtom);
+  const diameterDialogX = ctx.spy(diameterDialogXAtom);
+  const diameterDialogY = ctx.spy(diameterDialogYAtom);
+  const diameter = ctx.spy(diameterAtom);
+
+  React.useEffect(() => {
+    props.inContextMode(ctx, contextMenuVisible || diameterDialogVisible);
+  }, [contextMenuVisible, diameterDialogVisible]);
+
+  React.useEffect(() => {
+    document.addEventListener('click', handleDocumentContextMenuClick, { capture: true });
+    document.addEventListener('click', handleDocumentDialogClick, { capture: true });
+
+    return () => {
+      document.removeEventListener('click', handleDocumentContextMenuClick, { capture: true });
+      document.removeEventListener('click', handleDocumentDialogClick, { capture: true });
+    };
+  }, []);
+
+  const handleDocumentContextMenuClick = (e: Event) => {
+    if (!(e.target instanceof Node)) return;
+    if (
+      !ctx.get(contextMenuVisibleAtom) ||
+      ReactDOM.findDOMNode(contextMenuRef.current).contains(e.target)
+    ) {
+      return;
     }
-    return circle
-  }
+    e.stopPropagation();
+    contextMenuVisibleAtom(ctx, false);
+  };
 
-  // TODO: What's the type of e?
-  @action handleDocumentContextMenuClick = (e) => {
-    if (!this.contextMenuVisible || ReactDOM.findDOMNode(this.contextMenuRef).contains(e.target)) return
-    e.stopPropagation()
-    this.contextMenuVisible = false
-  }
+  const handleDocumentDialogClick = (e: Event) => {
+    if (!(e.target instanceof Node)) return;
+    if (
+      !ctx.get(diameterDialogVisibleAtom) ||
+      ReactDOM.findDOMNode(diameterDialogRef.current).contains(e.target)
+    ) {
+      return;
+    }
+    e.stopPropagation();
+    diameterDialogVisibleAtom(ctx, false);
+  };
 
-  // TODO: Dialog Abstraction (Component)
-  @action handleDocumentDialogClick = (e) => {
-    if (!this.diameterDialogVisible || ReactDOM.findDOMNode(this.diameterDialogRef).contains(e.target)) return
-    e.stopPropagation()
-    this.diameterDialogVisible = false
-  }
-
-  @action handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    const canvas = ReactDOM.findDOMNode(this.canvasRef) as HTMLElement
-    const x = e.pageX - canvas.offsetLeft
-    const y = e.pageY - canvas.offsetTop
-    const closest = this.getClosest(x, y)
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    const canvas = ReactDOM.findDOMNode(canvasRef.current) as HTMLElement;
+    const x = e.pageX - canvas.offsetLeft;
+    const y = e.pageY - canvas.offsetTop;
+    const closest = props.getClosest(x, y);
     if (closest == null) {
-      this.props.onCanvasClick(x, y)
+      props.onCanvasClick(x, y);
     } else {
-      this.props.onCircleClick(closest)
-      this.handleContextMenu(e)
+      props.onCircleClick(closest);
+      handleContextMenu(e);
     }
-  }
+  };
 
-  @action handleContextMenu = (e: React.MouseEvent<HTMLElement>) => {
-    this.contextMenuVisible = true
-    this.contextMenuX = e.pageX
-    this.contextMenuY = e.pageY
-  }
+  const handleContextMenu = (e: React.MouseEvent<HTMLElement>) => {
+    contextMenuVisibleAtom(ctx, true);
+    contextMenuXAtom(ctx, e.pageX);
+    contextMenuYAtom(ctx, e.pageY);
+  };
 
-  @action handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const canvas = ReactDOM.findDOMNode(this.canvasRef) as HTMLElement
-    const x = e.pageX - canvas.offsetLeft
-    const y = e.pageY - canvas.offsetTop
-    this.props.onMouseMove(x, y)
-  }
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const canvas = ReactDOM.findDOMNode(canvasRef.current) as HTMLElement;
+    const x = e.pageX - canvas.offsetLeft;
+    const y = e.pageY - canvas.offsetTop;
+    props.onMouseMove(x, y);
+  };
 
-  @action handleMouseLeave = () => {
-    this.props.onMouseLeave()
-  }
+  const handleMouseLeave = () => {
+    props.onMouseLeave();
+  };
 
-  @action handleContextMenuAdjust = () => {
-    this.props.onAdjustClick()
-    this.contextMenuVisible = false
-    this.diameterDialogVisible = true
-    this.diameterDialogX = this.contextMenuX
-    this.diameterDialogY = this.contextMenuY
-    this.diameter = this.props.getInitialDiameter()
-    this.initialDiameter = this.diameter
-  }
+  const handleContextMenuAdjust = () => {
+    props.onAdjustClick();
+    contextMenuVisibleAtom(ctx, false);
+    diameterDialogVisibleAtom(ctx, true);
+    diameterDialogXAtom(ctx, contextMenuX);
+    diameterDialogYAtom(ctx, contextMenuY);
+    const d = props.getInitialDiameter();
+    diameterAtom(ctx, d);
+    initialDiameter.current = d;
+  };
 
-  @action handleChangeDiameter = (e: React.FormEvent<HTMLInputElement>) => {
-    this.diameter = parseInt(e.currentTarget.value)
-    if (this.initialDiameter == null) this.initialDiameter = this.diameter
-    this.props.onDiameterChange(this.diameter)
-  }
+  const handleChangeDiameter = (e: React.FormEvent<HTMLInputElement>) => {
+    const d = parseInt(e.currentTarget.value);
+    diameterAtom(ctx, d);
+    if (initialDiameter.current == null) {
+      initialDiameter.current = d;
+    }
+    props.onDiameterChange(d);
+  };
 
-  @action handleStopChangeDiameter = (e: React.FormEvent<HTMLInputElement>) => {
-    this.props.onDiameterRelease(this.initialDiameter, parseInt(e.currentTarget.value))
-    this.initialDiameter = null
-  }
+  const handleStopChangeDiameter = (e: React.FormEvent<HTMLInputElement>) => {
+    props.onDiameterRelease(initialDiameter.current, parseInt(e.currentTarget.value));
+    initialDiameter.current = null;
+  };
 
-  render() {
-    return (
-      <VFlex
-        minWidth='410px' height='250px'
-        vspace={1}
+  return (
+    <VFlex minWidth="410px" height="250px" vspace={1}>
+      <Flex hspace={1} alignSelf="center">
+        <Button disabled={!props.canUndo} onClick={() => props.onUndo()}>
+          Undo
+        </Button>
+        <Button disabled={!props.canRedo} onClick={() => props.onRedo()}>
+          Redo
+        </Button>
+      </Flex>
+
+      <Box
+        innerRef={canvasRef}
+        onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        flex="1"
+        bg="white"
+        border="1px solid #bbb"
+        position="relative"
+        style={{ overflow: 'hidden' }}
       >
-        <Flex hspace={1} alignSelf='center'>
-          <Button
-            disabled={!this.props.canUndo.get()}
-            onClick={() => this.props.onUndo()}
-          >
-            Undo
-          </Button>
-          <Button
-            disabled={!this.props.canRedo.get()}
-            onClick={() => this.props.onRedo()}
-          >
-            Redo
-          </Button>
-        </Flex>
+        {props.circles.map((c, i) => (
+          <CircleComp key={i} circle={c} />
+        ))}
+      </Box>
 
-        <Box
-          innerRef={r => this.canvasRef = r}
-          onClick={this.handleClick}
-          onMouseMove={this.handleMouseMove}
-          onMouseLeave={this.handleMouseLeave}
-          flex='1'
-          bg='white'
-          border='1px solid #bbb'
-          position='relative'
-          style={{overflow: 'hidden'}}
+      {contextMenuVisible && (
+        <BoxClickable
+          innerRef={contextMenuRef}
+          onClick={handleContextMenuAdjust}
+          p={1}
+          position="absolute"
+          left={contextMenuX}
+          top={contextMenuY}
+          width={120}
+          bg="#eee"
+          border="1px solid #888"
+          borderRadius="4px"
+          boxShadow="0px 1px 5px rgba(0,0,0,0.15)"
         >
-          {this.props.circles.map((c, i) => <CircleComp key={i} circle={c} getActive={this.props.getCircleActive}/>)}
-        </Box>
-
-        {this.contextMenuVisible &&
-          <BoxClickable
-            innerRef={r => this.contextMenuRef = r}
-            onClick={this.handleContextMenuAdjust}
-            p={1}
-            position='absolute'
-            left={this.contextMenuX}
-            top={this.contextMenuY}
-            width={120}
-            bg='#eee'
-            border='1px solid #888'
-            borderRadius='4px'
-            boxShadow='0px 1px 5px rgba(0,0,0,0.15)'
+          Adjust Diameter
+        </BoxClickable>
+      )}
+      {diameterDialogVisible && (
+        <VFlex
+          innerRef={diameterDialogRef}
+          p={1}
+          vspace={1}
+          alignItems="center"
+          position="absolute"
+          left={diameterDialogX}
+          top={diameterDialogY}
+          width={180}
+          bg="#eee"
+          border="1px solid #888"
+          borderRadius="4px"
+          boxShadow="0px 1px 5px rgba(0,0,0,0.15)"
+        >
+          <Box flex="1">Adjust Diameter</Box>
+          <input
+            type="range"
+            min={2}
+            max={100}
+            value={diameter}
+            onChange={handleChangeDiameter}
+            onMouseUp={handleStopChangeDiameter}
             className={css`
-          `}>
-            Adjust Diameter
-          </BoxClickable>
-        }
-
-        {this.diameterDialogVisible &&
-          <VFlex
-            innerRef={r => this.diameterDialogRef = r}
-            p={1}
-            vspace={1}
-            alignItems='center'
-            position='absolute'
-            left={this.diameterDialogX}
-            top={this.diameterDialogY}
-            width={180}
-            bg='#eee'
-            border='1px solid #888'
-            borderRadius='4px'
-            boxShadow='0px 1px 5px rgba(0,0,0,0.15)'
-            className={css`
-          `}>
-            <Box flex='1'>Adjust Diameter</Box>
-            <input
-              type='range'
-              min={2}
-              max={100}
-              value={this.diameter}
-              onChange={this.handleChangeDiameter}
-              onMouseUp={this.handleStopChangeDiameter}
-              className={css`
               flex: 1;
-            `}/>
-          </VFlex>
-        }
-      </VFlex>
-    )
-  }
-}
+            `}
+          />
+        </VFlex>
+      )}
+    </VFlex>
+  );
+});

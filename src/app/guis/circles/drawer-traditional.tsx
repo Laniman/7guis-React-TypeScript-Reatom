@@ -1,190 +1,122 @@
-import * as React from 'react'
-import {observer} from 'mobx-react'
-import {action, computed, observable} from 'mobx'
-import {DateTime} from 'luxon'
-import {Comp} from '../../basic'
-import {ICircle} from './model'
-import {CircleDrawerPure} from './frame'
+import React from 'react';
+import { atom, action, reatomArray, reatomBoolean, type AtomMut } from '@reatom/framework';
+import { reatomComponent, useAction } from '@reatom/npm-react';
+import { withUndo } from '@reatom/undo';
+import { CircleDrawerPure } from './frame';
+import type { Circle } from './model';
 
-class Edit {
-  readonly undo: () => void
-  readonly redo: () => void
-  constructor(undo: () => void, redo: () => void) {
-    this.undo = undo
-    this.redo = redo
-  }
-}
+const circlesAtom = reatomArray<Circle>().pipe(withUndo());
+const inContextModeAtom = reatomBoolean(false);
+const selectedAtom = atom<Circle>(null) as AtomMut<Circle>;
+const hoveredAtom = atom<Circle>(null) as AtomMut<Circle>;
 
-class UndoManager {
-  private history = new Array<Edit>()
-  @observable private cursor = -1
+inContextModeAtom.onChange((ctx, prev) => {
+  if (!prev) selectedAtom(ctx, null);
+});
 
-  @action addEdit(edit: Edit) {
-    this.cursor++
-    this.history.length = this.cursor
-    this.history.push(edit)
-  }
+const reatomCircle = (x: number, y: number, diameter: number): Circle => {
+  const circle = {
+    x: atom(x),
+    y: atom(y),
+    diameter: atom(diameter),
+    hovered: atom((ctx) => {
+      return circle === ctx.spy(hoveredAtom);
+    }),
+    selected: atom((ctx) => {
+      return circle === ctx.spy(selectedAtom);
+    }),
+    active: atom((ctx) => {
+      if (ctx.spy(selectedAtom) === null) return ctx.spy(circle.hovered);
+      return ctx.spy(circle.selected);
+    }),
+  };
 
-  @computed get canUndo() {
-    return this.cursor >= 0
-  }
+  return circle;
+};
 
-  @computed get canRedo() {
-    return this.cursor < this.history.length - 1
-  }
-
-  @action undo() {
-    if (!this.canUndo) return
-    this.history[this.cursor].undo()
-    this.cursor--
-  }
-
-  @action redo() {
-    if (!this.canRedo) return
-    this.cursor++
-    this.history[this.cursor].redo()
-  }
-}
-
-class Circle implements ICircle {
-  @observable x = 0
-  @observable y = 0
-  @observable diameter = 0
-  constructor(private store: Store, x: number, y: number, diameter: number) {
-    this.x = x
-    this.y = y
-    this.diameter = diameter
-  }
-  @computed get hovered(): boolean {
-    return this === this.store.hovered
-  }
-  @computed get selected(): boolean {
-    return this === this.store.selected
-  }
-  @computed get active(): boolean {
-    if (this.store.selected == null) return this.hovered
-    return this.selected
-  }
-}
-
-class Store {
-  private readonly undoManager = new UndoManager()
-
-  readonly circles = observable.array<Circle>()
-
-  @observable hovered: Circle = null
-  @observable selected: Circle = null
-
-  getClosest(x: number, y: number): Circle {
-    let circle = null
-    let minDist = Number.MAX_VALUE
-    for (const c of this.circles) {
-      const d = Math.sqrt(Math.pow(x - c.x, 2) + Math.pow(y - c.y, 2))
-      if (d <= c.diameter / 2 && d < minDist) {
-          circle = c
-          minDist = d
-      }
+const getClosestAction = action((ctx, x: number, y: number): Circle => {
+  let circle = null;
+  let minDist = Number.MAX_VALUE;
+  const circles = ctx.get(circlesAtom);
+  for (const c of circles) {
+    const d = Math.sqrt(Math.pow(x - ctx.get(c.x), 2) + Math.pow(y - ctx.get(c.y), 2));
+    if (d <= ctx.get(c.diameter) / 2 && d < minDist) {
+      circle = c;
+      minDist = d;
     }
-    return circle
   }
+  return circle;
+});
 
-  canUndo = computed(() => this.undoManager.canUndo)
-  canRedo = computed(() => this.undoManager.canRedo)
+const addCircleAction = action((ctx, x: number, y: number) => {
+  const circle = reatomCircle(x, y, 30);
+  const length = ctx.get(circlesAtom).length;
+  circlesAtom.toSpliced(ctx, length, 0, circle);
+  hoveredAtom(ctx, circle);
+});
 
-  undo() {
-    this.undoManager.undo()
-  }
+const contextMenuAction = action((ctx) => {
+  const hovered = ctx.get(hoveredAtom);
+  if (hovered === null) return;
+  selectedAtom(ctx, hovered);
+});
 
-  redo() {
-    this.undoManager.redo()
-  }
+const mouseMoveAction = action((ctx, x: number, y: number) => {
+  const closest = getClosestAction(ctx, x, y);
+  hoveredAtom(ctx, closest);
+});
 
-  addCreateCircleEdit(circle: Circle) {
-    this.undoManager.addEdit(new Edit(
-      () => this.circles.remove(circle),
-      () => this.circles.push(circle)
-    ))
-  }
+const mouseLeaveAction = action((ctx) => {
+  hoveredAtom(ctx, null);
+});
 
-  addChangeDiameterEdit(circle: Circle, oldDiameter: number, newDiameter: number) {
-    this.undoManager.addEdit(new Edit(
-      () => circle.diameter = oldDiameter,
-      () => circle.diameter = newDiameter
-    ))
-  }
-}
+const adjustAction = action(() => {});
 
-@observer
-export class CircleDrawerTraditional extends Comp {
+const changeDiameterAction = action((ctx, d: number) => {
+  const selected = ctx.get(selectedAtom);
+  selected.diameter(ctx, d);
+});
 
-  store = new Store()
+const stopChangeDiameterAction = action((ctx, initial: number, d: number) => {
+  const circle = ctx.get(selectedAtom);
+  const circles = ctx.get(circlesAtom);
+  const index = circles.indexOf(circle);
+  circle.diameter(ctx, initial);
+  const next = reatomCircle(ctx.get(circle.x), ctx.get(circle.y), d);
+  circlesAtom.with(ctx, index, next);
+});
 
-  inContextMode = observable.box(false)
+export const CircleDrawerTraditional = reatomComponent(({ ctx }) => {
+  const handleAddCircle = useAction(addCircleAction);
+  const handleMouseMove = useAction(mouseMoveAction);
+  const handleMouseLeave = useAction(mouseLeaveAction);
+  const handleContextMenu = useAction(contextMenuAction);
+  const handleChangeDiameter = useAction(changeDiameterAction);
+  const handleStopChangeDiameter = useAction(stopChangeDiameterAction);
+  const handleAdjust = useAction(adjustAction);
+  const getClosest = useAction(getClosestAction);
 
-  componentDidMount() {
-    this.autorun(() => {
-      if (!this.inContextMode.get()) {
-        this.store.selected = null
-      }
-    })
-  }
-
-  @action handleAddCircle = (x: number, y: number) => {
-    const circle = new Circle(this.store, x, y, 30)
-    this.store.circles.push(circle)
-    this.store.addCreateCircleEdit(circle)
-    this.store.hovered = circle
-  }
-
-  @action handleContextMenu = () => {
-    if (this.store.hovered == null) return
-    this.store.selected = this.store.hovered
-  }
-
-  @action handleMouseMove = (x: number, y: number) => {
-    this.store.hovered = this.store.getClosest(x, y)
-  }
-
-  @action handleMouseLeave = () => {
-    this.store.hovered = null
-  }
-
-  @action handleAdjust = () => {
-  }
-
-  @action handleChangeDiameter = (d: number) => {
-    this.store.selected.diameter = d
-  }
-
-  @action handleStopChangeDiameter = (initial: number, d: number) => {
-    const circle = this.store.selected
-    this.store.addChangeDiameterEdit(circle, initial, d)
-    circle.diameter = d
-  }
-
-  handleGetCircleActive = (c: ICircle): boolean => {
-    return (c as Circle).active
-  }
-
-  render() {
-    return (
-      <CircleDrawerPure
-        circles={this.store.circles}
-        inContextMode={this.inContextMode}
-        onMouseMove={this.handleMouseMove}
-        onMouseLeave={this.handleMouseLeave}
-        onCanvasClick={this.handleAddCircle}
-        onCircleClick={this.handleContextMenu}
-        onAdjustClick={this.handleAdjust}
-        getCircleActive={this.handleGetCircleActive}
-        getInitialDiameter={() => this.store.selected.diameter}
-        onDiameterChange={this.handleChangeDiameter}
-        onDiameterRelease={this.handleStopChangeDiameter}
-        onUndo={() => this.store.undo()}
-        onRedo={() => this.store.redo()}
-        canUndo={this.store.canUndo}
-        canRedo={this.store.canRedo}
-      />
-    )
-  }
-}
+  return (
+    <CircleDrawerPure
+      circles={ctx.spy(circlesAtom)}
+      inContextMode={inContextModeAtom}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onCanvasClick={handleAddCircle}
+      onCircleClick={handleContextMenu}
+      onAdjustClick={handleAdjust}
+      getInitialDiameter={() => ctx.get(ctx.get(selectedAtom).diameter)}
+      getClosest={getClosest}
+      onDiameterChange={handleChangeDiameter}
+      onDiameterRelease={handleStopChangeDiameter}
+      onUndo={() => {
+        circlesAtom.undo(ctx);
+      }}
+      onRedo={() => {
+        circlesAtom.redo(ctx);
+      }}
+      canUndo={ctx.spy(circlesAtom.isUndoAtom)}
+      canRedo={ctx.spy(circlesAtom.isRedoAtom)}
+    />
+  );
+});
