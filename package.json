@@ -26,9 +26,6 @@
     "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.5",
-    "@fortawesome/fontawesome-free-solid": "^5.0.9",
-    "@fortawesome/react-fontawesome": "0.0.18",
     "@reatom/framework": "^3.4.31",
     "@reatom/lens": "^3.9.1",
     "@reatom/npm-react": "^3.8.2",

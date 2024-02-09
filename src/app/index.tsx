@@ -6,8 +6,6 @@ import {observer} from 'mobx-react'
 import MobxDevTools from 'mobx-react-devtools'
 import {css, cx} from 'emotion'
 import {ThemeProvider} from 'emotion-theming'
-import FontAwesome from '@fortawesome/react-fontawesome'
-import faFileCode from '@fortawesome/fontawesome-free-solid/faFileCode'
 import './css'
 import {Counter} from './guis/counter'
 import {Box, Fill, Flex} from './basic'
@@ -26,32 +24,38 @@ const theme = {
 
 const ctx = createCtx()
 
-@observer
-class App extends React.Component<{
-}> {
+function IconFileCode(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 384 512" fill="currentColor" height="1em" width="1em" {...props}>
+      <path d="M384 121.941V128H256V0h6.059c6.365 0 12.47 2.529 16.971 7.029l97.941 97.941A24.005 24.005 0 0 1 384 121.941zM248 160c-13.2 0-24-10.8-24-24V0H24C10.745 0 0 10.745 0 24v464c0 13.255 10.745 24 24 24h336c13.255 0 24-10.745 24-24V160H248zM123.206 400.505a5.4 5.4 0 0 1-7.633.246l-64.866-60.812a5.4 5.4 0 0 1 0-7.879l64.866-60.812a5.4 5.4 0 0 1 7.633.246l19.579 20.885a5.4 5.4 0 0 1-.372 7.747L101.65 336l40.763 35.874a5.4 5.4 0 0 1 .372 7.747l-19.579 20.884zm51.295 50.479l-27.453-7.97a5.402 5.402 0 0 1-3.681-6.692l61.44-211.626a5.402 5.402 0 0 1 6.692-3.681l27.452 7.97a5.4 5.4 0 0 1 3.68 6.692l-61.44 211.626a5.397 5.397 0 0 1-6.69 3.681zm160.792-111.045l-64.866 60.812a5.4 5.4 0 0 1-7.633-.246l-19.58-20.885a5.4 5.4 0 0 1 .372-7.747L284.35 336l-40.763-35.874a5.4 5.4 0 0 1-.372-7.747l19.58-20.885a5.4 5.4 0 0 1 7.633-.246l64.866 60.812a5.4 5.4 0 0 1-.001 7.879z"></path>
+    </svg>
+  );
+}
 
-  renderGui(title, filename, comp) {
+@observer
+class App extends React.Component<{}> {
+  renderGui(title: string, filename: string, comp: React.ReactNode) {
     return (
       <Box mb={4}>
         <Flex
           f={2}
           flexDirection='column'
           className={cx('window', css`
-          display: inline-flex;
-        `)}>
+            display: inline-flex;
+          `)}>
           <Flex
             p={1} f={2} textAlign='center' alignItems='center'
             className={cx('titlebar', css`
-            position: relative;
-            user-select: none;
-          `)}>
+              position: relative;
+              user-select: none;
+            `)}>
             <Box
               className={css`
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            `}>
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              `}>
               {title}
             </Box>
             <Fill/>
@@ -59,7 +63,7 @@ class App extends React.Component<{
               target='_blank'
               href={`https://github.com/Laniman/7guis-React-TypeScript-Reatom/blob/master/src/app/guis/${filename}`}
             >
-              <FontAwesome color='#999' icon={faFileCode}/>
+              <IconFileCode color='#999' className="icon-file-code" />
             </a>
           </Flex>
           <Box p={2}>

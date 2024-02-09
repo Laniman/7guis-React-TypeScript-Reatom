@@ -47,4 +47,9 @@ a {
   box-shadow: 0px 4px 15px rgba(172, 172, 172, 0.75);
   color: #4d494d;
 }
+
+.icon-file-code {
+  display: inline-block;
+  vertical-align: -0.125em;
+}
 `
