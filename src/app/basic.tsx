@@ -96,7 +96,7 @@ ${flexDirection}
 ${alignSelf}
 ` as any
 
-export const Flex2 = ({ className, ...rest }: React.HTMLProps<HTMLDivElement>) => {
+export const Flex2 = ({ className, ...rest }: React.ComponentPropsWithoutRef<'div'>) => {
   return <div className={`flex ${className}`} {...rest} />
 }
 
@@ -115,7 +115,7 @@ export const Span = styled(Box.withComponent(tag.span))`
 display: inline-block;
 ` as any
 
-export const Span2 = ({ className, ...rest}: React.HTMLProps<HTMLSpanElement>) => {
+export const Span2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
   return <span className={`inline-block ${className}`} {...rest} />
 }
 
@@ -153,7 +153,7 @@ TextInput.defaultProps = {
   p: 1,
 }
 
-export const TextInput2 = ({ className, ...rest}: React.HTMLProps<HTMLInputElement>) => {
+export const TextInput2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'input'>) => {
   return <input type="text" className={cx(styles.input, className)} {...rest} />
 }
 
@@ -164,7 +164,7 @@ Label.defaultProps = {
   minWidth: '1rem',
 }
 
-export const Label2 = ({ className, ...rest}: React.HTMLProps<HTMLSpanElement>) => {
+export const Label2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
   return <Span2 className={cx(['p-1', 'text-center', 'min-w-[1rem]'], className)} {...rest} />
 }
 
