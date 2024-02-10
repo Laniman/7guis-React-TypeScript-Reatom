@@ -1,18 +1,16 @@
-// Deliberately using a global counter to keep things simplistic
-// and to show an alternative style. If you want to have several
-// counters then the state should be bound to the component,
-// of course.
-
-import * as React from 'react'
-import { atom } from '@reatom/framework'
-import { reatomComponent } from '@reatom/npm-react'
-import {Button, Flex, Label} from '../basic'
+import React from 'react';
+import { atom } from '@reatom/framework';
+import { reatomComponent } from '@reatom/npm-react';
+import { Button2, Flex2, Label2 } from '../basic';
+import { cx } from '../utils';
 
 const countAtom = atom(0);
 
-export const Counter = reatomComponent(({ ctx }) =>
-  <Flex alignItems='center' minWidth='200px'>
-    <Label flex='1'>{ctx.spy(countAtom)}</Label>
-    <Button flex='1' onClick={() => countAtom(ctx, (count) => count + 1)}>Count</Button>
-  </Flex>
-)
+export const Counter = reatomComponent(({ ctx }) => (
+  <Flex2 className={cx('items-center', 'min-w-[200px]')}>
+    <Label2 className="flex-1">{ctx.spy(countAtom)}</Label2>
+    <Button2 className="flex-1" onClick={() => countAtom(ctx, (count) => count + 1)}>
+      Count
+    </Button2>
+  </Flex2>
+));

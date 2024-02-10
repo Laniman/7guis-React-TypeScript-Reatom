@@ -1,12 +1,12 @@
-import * as React from 'react'
+import React from 'react'
 import {Component} from 'react'
 import { atom } from '@reatom/framework'
 import {reatomComponent, useAtom} from '@reatom/npm-react'
 
-import {Flex, Label, TextInput} from '../basic'
+import {Flex2, Label2, TextInput2} from '../basic'
 
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n)
+function isNumeric(n: string): boolean {
+  return !isNaN(parseFloat(n)) && isFinite(Number(n));
 }
 
 class TempConvPure extends Component<{
@@ -26,20 +26,20 @@ class TempConvPure extends Component<{
   render() {
     const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit } = this.props
     return (
-      <Flex alignItems='center'>
-        <TextInput
-          style={{background: this.getBackground(celsius, fahrenheit)}}
+      <Flex2 className="items-center">
+        <TextInput2
+          style={{ background: this.getBackground(celsius, fahrenheit) }}
           value={celsius}
           onChange={onChangeCelsius}
         />
-        <Label>Celsius = </Label>
-        <TextInput
-          style={{background: this.getBackground(fahrenheit, celsius)}}
+        <Label2>Celsius = </Label2>
+        <TextInput2
+          style={{ background: this.getBackground(fahrenheit, celsius) }}
           value={fahrenheit}
           onChange={onChangeFahrenheit}
         />
-        <Label>Fahrenheit</Label>
-      </Flex>
+        <Label2>Fahrenheit</Label2>
+      </Flex2>
     )
   }
 }

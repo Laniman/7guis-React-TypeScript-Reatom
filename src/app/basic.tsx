@@ -33,6 +33,8 @@ import {
   zIndex,
 } from 'styled-system'
 import tag from 'clean-tag'
+import { cx } from './utils';
+import styles from './basic.module.css';
 
 const vspace = props => {
   let v = props.vspace
@@ -94,22 +96,17 @@ ${flexDirection}
 ${alignSelf}
 ` as any
 
+export const Flex2 = ({ className, ...rest }: React.HTMLProps<HTMLDivElement>) => {
+  return <div className={`flex ${className}`} {...rest} />
+}
+
 export const VFlex = styled(Flex)`
 ` as any
 VFlex.defaultProps = {
   flexDirection: 'column'
 }
 
-export const Fill = styled(Box)`
-flex: 1 1 auto;
-` as any
-
 export const BoxClickable = styled(Box)`
-cursor: pointer;
-user-select: none;
-` as any
-
-export const FlexClickable = styled(Flex)`
 cursor: pointer;
 user-select: none;
 ` as any
@@ -117,6 +114,10 @@ user-select: none;
 export const Span = styled(Box.withComponent(tag.span))`
 display: inline-block;
 ` as any
+
+export const Span2 = ({ className, ...rest}: React.HTMLProps<HTMLSpanElement>) => {
+  return <span className={`inline-block ${className}`} {...rest} />
+}
 
 export class Stack extends Component {
   render() {
@@ -152,11 +153,19 @@ TextInput.defaultProps = {
   p: 1,
 }
 
+export const TextInput2 = ({ className, ...rest}: React.HTMLProps<HTMLInputElement>) => {
+  return <input type="text" className={cx(styles.input, className)} {...rest} />
+}
+
 export const Label = styled(Span)`` as any
 Label.defaultProps = {
   p: 1,
   textAlign: 'center',
   minWidth: '1rem',
+}
+
+export const Label2 = ({ className, ...rest}: React.HTMLProps<HTMLSpanElement>) => {
+  return <Span2 className={cx(['p-1', 'text-center', 'min-w-[1rem]'], className)} {...rest} />
 }
 
 // TODO: How to merge with an existing classname?
@@ -206,4 +215,8 @@ Button.defaultProps = {
   bg: '#ccc',
   textAlign: 'center',
   minWidth: '1rem',
+}
+
+export const Button2 = ({ className, ...rest}) => {
+  return <button className={cx(styles.button, styles.clickable, 'py-1', 'px-2', 'bg-[#ccc]', 'text-center', 'min-w-[1rem]' , className)} {...rest} />
 }

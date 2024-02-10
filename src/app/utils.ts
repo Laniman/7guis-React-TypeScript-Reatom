@@ -5,3 +5,11 @@ export function uuid() {
     return v.toString(16)
   })
 }
+
+export function cx(...args: unknown[]): string {
+  return args
+    .flat()
+    .filter(x => typeof x === 'string')
+    .join(' ')
+    .trim()
+}

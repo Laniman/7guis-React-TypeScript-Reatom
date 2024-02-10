@@ -4,17 +4,18 @@ import { reatomContext } from '@reatom/npm-react'
 import { createCtx } from '@reatom/framework'
 import {observer} from 'mobx-react'
 import MobxDevTools from 'mobx-react-devtools'
-import {css, cx} from 'emotion'
 import {ThemeProvider} from 'emotion-theming'
 import './css'
+import './css.css'
 import {Counter} from './guis/counter'
-import {Box, Fill, Flex} from './basic'
+import {Flex2} from './basic'
 import {TempConvAuto, TempConvManual} from './guis/tempconv'
 import {FlightBooker} from './guis/flight'
 import {Timer} from './guis/timer'
 import {Crud} from './guis/crud'
 import {CircleDrawerTraditional} from './guis/circles/drawer-traditional'
 import {Cells} from './guis/cells/cells'
+import {cx} from './utils'
 
 const theme = {
   fontSizes: [
@@ -36,41 +37,26 @@ function IconFileCode(props: React.SVGProps<SVGSVGElement>) {
 class App extends React.Component<{}> {
   renderGui(title: string, filename: string, comp: React.ReactNode) {
     return (
-      <Box mb={4}>
-        <Flex
-          f={2}
-          flexDirection='column'
-          className={cx('window', css`
-            display: inline-flex;
-          `)}>
-          <Flex
-            p={1} f={2} textAlign='center' alignItems='center'
-            className={cx('titlebar', css`
-              position: relative;
-              user-select: none;
-            `)}>
-            <Box
-              className={css`
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-              `}>
+      <div className="mb-8">
+        <Flex2 className={cx('window', 'flex-col', 'inline-flex', 'text-[13px]')}>
+          <Flex2 className={cx('titlebar', 'p-1', 'text-center', 'items-center', 'relative', 'select-none', 'text-[13px]')}>
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               {title}
-            </Box>
-            <Fill/>
+            </div>
+            <div className="flex-auto"/>
             <a
               target='_blank'
               href={`https://github.com/Laniman/7guis-React-TypeScript-Reatom/blob/master/src/app/guis/${filename}`}
             >
-              <IconFileCode color='#999' className="icon-file-code" />
+              <IconFileCode color='#999' className="icon-file-code"/>
             </a>
-          </Flex>
-          <Box p={2}>
-          {comp}
-          </Box>
-        </Flex>
-      </Box>
+          </Flex2>
+          <div className="p-2">
+            {comp}
+          </div>
+        </Flex2>
+      </div>
     )
   }
 
@@ -78,17 +64,11 @@ class App extends React.Component<{}> {
     return (
       <reatomContext.Provider value={ctx}>
       <ThemeProvider theme={theme}>
-        <div
-          className={css`
-          max-width: 40rem;
-          margin-left: auto;
-          margin-right: auto;
-          padding: 1.5rem 1.125rem;
-        `}>
+        <div className={cx('max-w-[40rem]', 'ml-auto', 'mr-auto', 'py-[1.5rem] px-[1.125rem]')}>
           <MobxDevTools position={{bottom: 0, right: 0}}/>
           <h1>7GUIs in React/TypeScript/Reatom</h1>
-          <Box mb={4}/>
-          <Box f={3}>
+          <div className="mb-8"/>
+          <div className="text-[16px]">
             This is a live version of an implementation
             {' '}(<a href='https://github.com/Laniman/7guis-React-TypeScript-Reatom'>source</a>){' '}
             of
@@ -97,8 +77,8 @@ class App extends React.Component<{}> {
             {' '}<a href='https://reactjs.org/'>React</a>,{' '}
             {' '}<a href='https://www.typescriptlang.org'>TypeScript</a> and{' '}
             {' '}<a href='https://www.reatom.dev/'>Reatom</a>.{' '}
-          </Box>
-          <Box mb={4}/>
+          </div>
+          <div className="mb-8"/>
           {this.renderGui('Counter', 'counter.tsx', <Counter/>)}
           {this.renderGui('TempConv Manual', 'tempconv.tsx', <TempConvManual/>)}
           {this.renderGui('TempConv Auto', 'tempconv.tsx', <TempConvAuto/>)}
@@ -113,5 +93,7 @@ class App extends React.Component<{}> {
     )
   }
 }
+
 const root = createRoot(document.getElementById('root'));
+
 root.render(<App/>);
