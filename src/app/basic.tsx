@@ -136,20 +136,7 @@ export class Stack extends Component {
   }
 }
 
-export const TextInput = styled(Box.withComponent(tag.input))`
-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
-border-radius: 5px;
-border: 1px solid #ddd;
-&:disabled {
-  background: #eee;
-}
-` as any
-TextInput.defaultProps = {
-  type: 'text',
-  p: 1,
-}
-
-export const TextInput2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'input'>) => {
+export const TextInput = ({ className, ...rest}: React.ComponentPropsWithoutRef<'input'>) => {
   return <input type="text" className={cx(styles.input, className)} {...rest} />
 }
 
