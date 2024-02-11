@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { css } from 'emotion';
-import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from '../basic';
-import { uuid } from '../utils';
 import { reatomComponent, useAtom, useAction } from '@reatom/npm-react';
+import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from '../basic';
+import { cx, uuid } from '../utils';
 
 const padder = (
   <Label className="invisible">
@@ -60,15 +60,14 @@ export const Crud = reatomComponent(({ ctx }) => {
   );
 
   return (
-    <VFlex minWidth="410px" vspace={2}>
+    <VFlex className={cx('min-w-[410px]')} vspace="8px">
       <Flex hspace={1}>
         <Flex flex="1">
           <Label>
             Filter{'\u00A0'}prefix:{'\u00A0'}
           </Label>
-          <TextField
-            width="0"
-            flex="1"
+          <TextInput
+            className={cx('w-0', 'flex-1')}
             value={prefix}
             onChange={(e) => setPrefix(e.target.value)}
           />
@@ -99,11 +98,19 @@ export const Crud = reatomComponent(({ ctx }) => {
               {padder}
               <Label>Name: </Label>
             </Stack>
-            <TextField flex="1" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            <TextInput
+              className={cx('flex-1')}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
           </Flex>
           <Flex>
             <Label>Surname: </Label>
-            <TextField flex="1" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            <TextInput
+              className={cx('flex-1')}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
           </Flex>
         </Box>
       </Flex>
@@ -116,12 +123,3 @@ export const Crud = reatomComponent(({ ctx }) => {
     </VFlex>
   );
 });
-
-class TextField extends Component<{
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> {
-  render() {
-    return <TextInput {...this.props} />;
-  }
-}

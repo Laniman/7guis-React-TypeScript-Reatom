@@ -5,6 +5,7 @@ import { mapState } from '@reatom/lens'
 import {css} from 'emotion'
 import { reatomTimer } from '@reatom/timer'
 import {Box, Button, Flex, Label, Stack, VFlex} from '../basic'
+import { cx } from "../utils";
 
 function clamp(num, min, max) {
   return num <= min ? min : num >= max ? max : num;
@@ -49,8 +50,8 @@ export const Timer = reatomComponent(({ ctx }) => {
 
   return (
     <VFlex
-      minWidth='350px'
-      vspace={1}
+      className={cx('min-w-[350px]')}
+      vspace="4px"
     >
       <GaugeTime max={max} value={elapsed}/>
       <TextTime value={elapsed}/>

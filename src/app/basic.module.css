@@ -3,6 +3,10 @@
   user-select: none;
 }
 
+.flex {
+  display: flex;
+}
+
 .button {
   text-decoration: none;
   color: black;
@@ -60,5 +64,21 @@
     position: absolute;
     top: 0;
     left: 0;
+  }
+}
+
+.VFlex {
+  flex-direction: column;
+  --vspace: 0;
+  --hspace: 0;
+
+  & > *:not(:first-child) {
+    margin-top: var(--vspace);
+    margin-left: var(--hspace);
+  }
+
+  & > *:first-child {
+    margin-top: 0;
+    margin-left: 0;
   }
 }

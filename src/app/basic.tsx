@@ -95,15 +95,21 @@ ${flexDirection}
 ${alignSelf}
 ` as any
 
-export const Flex2 = ({ className, ...rest }: React.ComponentPropsWithoutRef<'div'>) => {
-  return <div className={cx('flex', className)} {...rest} />
+export const Flex2 = React.forwardRef<HTMLDivElement, React.ComponentPropsWithRef<'div'>>(({ className, ...rest }, ref) => {
+  return <div ref={ref} className={cx(styles.flex, className)} {...rest} />
+});
+
+interface VFlexProps extends React.ComponentPropsWithRef<'div'> {
+  vspace?: string
+  hspace?: string
 }
 
-export const VFlex = styled(Flex)`
-` as any
-VFlex.defaultProps = {
-  flexDirection: 'column'
-}
+export const VFlex = React.forwardRef<HTMLDivElement, VFlexProps>(
+  ({ className, vspace, hspace, ...rest }, ref) => {
+    const style={ "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
+    return <Flex2 ref={ref} className={cx(styles.VFlex, className)} style={style} {...rest} />;
+  },
+);
 
 export const BoxClickable = React.forwardRef<HTMLDivElement, React.ComponentPropsWithRef<'div'>>(
   ({ className, ...rest }, ref) => {

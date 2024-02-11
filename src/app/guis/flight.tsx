@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DateTime } from 'luxon';
 import { reatomComponent, useAtom } from '@reatom/npm-react';
 import { Button, TextInput, VFlex } from '../basic';
+import { cx } from "../utils";
 
 const dateFormat = 'dd.MM.yyyy';
 
@@ -43,12 +44,13 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
         return alert(
           `You have booked a return flight from ${ctx.get(startAtom)} to ${ctx.get(endAtom)}`,
         );
+      default:
+        throw 'Impossible';
     }
-    throw 'Impossible';
   };
 
   return (
-    <VFlex minWidth="200px" vspace={2}>
+    <VFlex className={cx('min-w-[200px]')} vspace="8px">
       <select value={type} onChange={(e) => setType(e.target.value as 'one-way' | 'return')}>
         <option value="one-way">one-way flight</option>
         <option value="return">return flight</option>

@@ -5,6 +5,7 @@ import {observer} from 'mobx-react'
 import {action, IObservableValue, observable} from 'mobx'
 import {css} from 'emotion'
 import {Box, Flex, Span, TextInput, VFlex} from '../../basic'
+import {cx} from "../../utils";
 import {Cell} from './cell'
 import {FormulaParser} from './parser'
 
@@ -51,10 +52,9 @@ export class Cells extends Component {
     const { cells } = this.store
     return (
       <VFlex
-        width='500px'
-        vspace={1}
-        className={css`
-      `}>
+        className={cx('w-[500px]')}
+        vspace="4px"
+      >
         <table
           className={css`
           table-layout: fixed;
@@ -166,7 +166,7 @@ class CellComp extends Component<{
         {cell.editing.get() ? (
           <TextField
             ref={this.handleFocus}
-            w='100%'
+            className={cx('w-full')}
             value={cell.content}
             onKeyPress={this.handleEnterKeyPress}
             onKeyUp={this.handleEscKeyUp}

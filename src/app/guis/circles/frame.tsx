@@ -61,7 +61,7 @@ const diameterAtom = atom(0);
 export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, ...props }) => {
   const canvasRef = React.useRef(null);
   const contextMenuRef = React.useRef<HTMLDivElement>(null);
-  const diameterDialogRef = React.useRef(null);
+  const diameterDialogRef = React.useRef<HTMLDivElement>(null);
   const initialDiameter = React.useRef<number>(null);
 
   const contextMenuVisible = ctx.spy(contextMenuVisibleAtom);
@@ -103,7 +103,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
     if (!(e.target instanceof Node)) return;
     if (
       !ctx.get(diameterDialogVisibleAtom) ||
-      ReactDOM.findDOMNode(diameterDialogRef.current).contains(e.target)
+      diameterDialogRef.current.contains(e.target)
     ) {
       return;
     }
@@ -167,7 +167,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
   };
 
   return (
-    <VFlex minWidth="410px" height="250px" vspace={1}>
+    <VFlex className={cx('min-w-[410px]', 'h-[250px]')} vspace="4px">
       <Flex hspace={1} alignSelf="center">
         <Button disabled={!props.canUndo} onClick={() => props.onUndo()}>
           Undo
@@ -215,18 +215,24 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
       )}
       {diameterDialogVisible && (
         <VFlex
-          innerRef={diameterDialogRef}
-          p={1}
-          vspace={1}
-          alignItems="center"
-          position="absolute"
-          left={diameterDialogX}
-          top={diameterDialogY}
-          width={180}
-          bg="#eee"
-          border="1px solid #888"
-          borderRadius="4px"
-          boxShadow="0px 1px 5px rgba(0,0,0,0.15)"
+          ref={diameterDialogRef}
+          className={cx(
+            'p-1',
+            'items-center',
+            'absolute',
+            'w-[180px]',
+            'bg-[#eee]',
+            'border-[1px]',
+            'border-[#888]',
+            'border-solid',
+            'rounded-[4px]',
+            'shadow-[0px_1px_5px_rgba(0,0,0,0.15)]',
+          )}
+          vspace="4px"
+          style={{
+            left: diameterDialogX,
+            top: diameterDialogY,
+          }}
         >
           <Box flex="1">Adjust Diameter</Box>
           <input
