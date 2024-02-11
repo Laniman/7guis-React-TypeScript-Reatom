@@ -1,5 +1,4 @@
-import * as React from 'react'
-import {Component} from 'react'
+import React from 'react'
 import styled from 'react-emotion'
 import {css} from 'emotion'
 import {
@@ -97,7 +96,7 @@ ${alignSelf}
 ` as any
 
 export const Flex2 = ({ className, ...rest }: React.ComponentPropsWithoutRef<'div'>) => {
-  return <div className={`flex ${className}`} {...rest} />
+  return <div className={cx('flex', className)} {...rest} />
 }
 
 export const VFlex = styled(Flex)`
