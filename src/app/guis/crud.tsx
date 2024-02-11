@@ -123,4 +123,6 @@ export const Crud = reatomComponent(({ ctx }) => {
       </Flex>
     </VFlex>
   );
-});
+}) as React.FC;
+
+Crud.displayName = "Crud";

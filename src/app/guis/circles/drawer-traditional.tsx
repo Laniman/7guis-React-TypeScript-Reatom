@@ -129,4 +129,6 @@ export const CircleDrawerTraditional = reatomComponent(({ ctx }) => {
       canRedo={ctx.spy(circlesAtom.isRedoAtom)}
     />
   );
-});
+}) as React.FC;
+
+CircleDrawerTraditional.displayName = "CircleDrawerTraditional";

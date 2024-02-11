@@ -74,7 +74,9 @@ export const Timer = reatomComponent(({ ctx }) => {
       </Button>
     </VFlex>
   );
-});
+}) as React.FC;
+
+Timer.displayName = "Timer";
 
 class TextTime extends Component<{
   value: number;

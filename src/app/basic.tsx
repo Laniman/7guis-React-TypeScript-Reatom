@@ -17,6 +17,8 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
   },
 );
 
+Box.displayName = "Box";
+
 interface FlexProps extends React.ComponentPropsWithRef<"div"> {
   vspace?: string;
   hspace?: string;
@@ -38,6 +40,8 @@ export const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
     );
   },
 );
+
+Flex.displayName = "Flex";
 
 interface VFlexProps extends React.ComponentPropsWithRef<"div"> {
   vspace?: string;
@@ -61,12 +65,16 @@ export const VFlex = React.forwardRef<HTMLDivElement, VFlexProps>(
   },
 );
 
+VFlex.displayName = "VFlex";
+
 export const BoxClickable = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithRef<"div">
 >(({ className, ...rest }, ref) => {
   return <div ref={ref} className={cx("inline-block", className)} {...rest} />;
 });
+
+BoxClickable.displayName = "BoxClickable";
 
 export const Span = ({
   className,

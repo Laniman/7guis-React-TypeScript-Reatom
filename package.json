@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.23.9",
+    "@types/luxon": "^3.4.2",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",

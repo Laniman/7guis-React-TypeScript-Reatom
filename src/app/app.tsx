@@ -24,78 +24,93 @@ function IconFileCode(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-@observer
-export class App extends React.Component<{}> {
-  renderGui(title: string, filename: string, comp: React.ReactNode) {
-    return (
-      <div className="mb-8">
-        <Flex
-          className={cx("window", "flex-col", "inline-flex", "text-[13px]")}
-        >
-          <Flex
-            className={cx(
-              "titlebar",
-              "p-1",
-              "text-center",
-              "items-center",
-              "relative",
-              "select-none",
-              "text-[13px]",
-            )}
-          >
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              {title}
-            </div>
-            <div className="flex-auto" />
-            <a
-              target="_blank"
-              href={`https://github.com/Laniman/7guis-React-TypeScript-Reatom/blob/master/src/app/guis/${filename}`}
-            >
-              <IconFileCode color="#999" className="icon-file-code" />
-            </a>
-          </Flex>
-          <div className="p-2">{comp}</div>
-        </Flex>
-      </div>
-    );
-  }
+const Gui = (props: {
+  title: string;
+  filename: string;
+  comp: React.ReactNode;
+}) => {
+  const { title, filename, comp } = props;
 
-  render() {
-    return (
-      <div
-        className={cx(
-          "max-w-[40rem]",
-          "ml-auto",
-          "mr-auto",
-          "py-[1.5rem] px-[1.125rem]",
-        )}
-      >
-        <h1>7GUIs in React/TypeScript/Reatom</h1>
-        <div className="mb-8" />
-        <div className="text-[16px]">
-          This is a live version of an implementation (
-          <a href="https://github.com/Laniman/7guis-React-TypeScript-Reatom">
-            source
+  return (
+    <div className="mb-8">
+      <Flex className={cx("window", "flex-col", "inline-flex", "text-[13px]")}>
+        <Flex
+          className={cx(
+            "titlebar",
+            "p-1",
+            "text-center",
+            "items-center",
+            "relative",
+            "select-none",
+            "text-[13px]",
+          )}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            {title}
+          </div>
+          <div className="flex-auto" />
+          <a
+            target="_blank"
+            href={`https://github.com/Laniman/7guis-React-TypeScript-Reatom/blob/master/src/app/guis/${filename}`}
+          >
+            <IconFileCode color="#999" className="icon-file-code" />
           </a>
-          ) of <a href="https://eugenkiss.github.io/7guis/">7GUIs</a> with{" "}
-          <a href="https://reactjs.org/">React</a>,{" "}
-          <a href="https://www.typescriptlang.org">TypeScript</a> and{" "}
-          <a href="https://www.reatom.dev/">Reatom</a>.{" "}
-        </div>
-        <div className="mb-8" />
-        {this.renderGui("Counter", "counter.tsx", <Counter />)}
-        {this.renderGui("TempConv Manual", "tempconv.tsx", <TempConvManual />)}
-        {this.renderGui("TempConv Auto", "tempconv.tsx", <TempConvAuto />)}
-        {this.renderGui("Flight Booker", "flight.tsx", <FlightBooker />)}
-        {this.renderGui("Timer", "timer.tsx", <Timer />)}
-        {this.renderGui("CRUD", "crud.tsx", <Crud />)}
-        {this.renderGui(
-          "Circle Drawer Traditional",
-          "circles/drawer-traditional.tsx",
-          <CircleDrawerTraditional />,
-        )}
-        {this.renderGui("Cells", "cells/cells.tsx", <Cells />)}
+        </Flex>
+        <div className="p-2">{comp}</div>
+      </Flex>
+    </div>
+  );
+};
+
+export const App = observer(() => {
+  return (
+    <div
+      className={cx(
+        "max-w-[40rem]",
+        "ml-auto",
+        "mr-auto",
+        "py-[1.5rem] px-[1.125rem]",
+      )}
+    >
+      <h1>7GUIs in React/TypeScript/Reatom</h1>
+      <div className="mb-8" />
+      <div className="text-[16px]">
+        This is a live version of an implementation (
+        <a href="https://github.com/Laniman/7guis-React-TypeScript-Reatom">
+          source
+        </a>
+        ) of <a href="https://eugenkiss.github.io/7guis/">7GUIs</a> with{" "}
+        <a href="https://reactjs.org/">React</a>,{" "}
+        <a href="https://www.typescriptlang.org">TypeScript</a> and{" "}
+        <a href="https://www.reatom.dev/">Reatom</a>.{" "}
       </div>
-    );
-  }
-}
+      <div className="mb-8" />
+      <Gui title="Counter" filename="counter.tsx" comp={<Counter />} />
+      <Gui
+        title="TempConv Manual"
+        filename="tempconv.tsx"
+        comp={<TempConvManual />}
+      />
+      <Gui
+        title="TempConv Auto"
+        filename="tempconv.tsx"
+        comp={<TempConvAuto />}
+      />
+      <Gui
+        title="Flight Booker"
+        filename="flight.tsx"
+        comp={<FlightBooker />}
+      />
+      <Gui title="Timer" filename="timer.tsx" comp={<Timer />} />
+      <Gui title="CRUD" filename="crud.tsx" comp={<Crud />} />
+      <Gui
+        title="Circle Drawer Traditional"
+        filename="circles/drawer-traditional.tsx"
+        comp={<CircleDrawerTraditional />}
+      />
+      <Gui title="Cells" filename="cells/cells.tsx" comp={<Cells />} />
+    </div>
+  );
+}) as React.FC;
+
+App.displayName = "App";

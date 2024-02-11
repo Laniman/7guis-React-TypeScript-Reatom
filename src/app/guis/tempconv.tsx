@@ -109,4 +109,6 @@ export const TempConvAuto = reatomComponent(({ ctx }) => {
       }}
     />
   );
-});
+}) as React.FC;
+
+TempConvAuto.displayName = "TempConvAuto";

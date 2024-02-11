@@ -9,7 +9,7 @@ interface CircleCompProps {
   circle: Circle;
 }
 
-const CircleComp = reatomComponent<CircleCompProps>(({ ctx, ...props }) => {
+const CircleComp = reatomComponent(({ ctx, ...props }) => {
   const { circle } = props;
 
   return (
@@ -32,7 +32,9 @@ const CircleComp = reatomComponent<CircleCompProps>(({ ctx, ...props }) => {
       }}
     />
   );
-});
+}) as React.FC<CircleCompProps>;
+
+CircleComp.displayName = "CircleComp";
 
 interface CircleDrawerPureProps {
   circles: Array<Circle>;
@@ -61,7 +63,7 @@ const diameterDialogXAtom = atom(0);
 const diameterDialogYAtom = atom(0);
 const diameterAtom = atom(0);
 
-export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(
+export const CircleDrawerPure = reatomComponent(
   ({ ctx, ...props }) => {
     const canvasRef = React.useRef<HTMLDivElement>(null);
     const contextMenuRef = React.useRef<HTMLDivElement>(null);
@@ -268,4 +270,6 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(
       </VFlex>
     );
   },
-);
+) as React.FC<CircleDrawerPureProps>;
+
+CircleDrawerPure.displayName = "CircleDrawerPure";

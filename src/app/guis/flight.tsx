@@ -8,7 +8,7 @@ const dateFormat = "dd.MM.yyyy";
 
 function getTimestamp(date: string): number {
   const parsed = DateTime.fromFormat(date, dateFormat);
-  if (parsed.invalid != null) return null;
+  if (!parsed.isValid) return null;
   return parsed.valueOf();
 }
 
@@ -80,7 +80,9 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
       </Button>
     </VFlex>
   );
-});
+}) as React.FC;
+
+FlightBooker.displayName = "FlightBooker";
 
 class DateInput extends Component<{
   value: string;
