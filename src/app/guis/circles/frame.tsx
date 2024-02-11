@@ -59,7 +59,7 @@ const diameterDialogYAtom = atom(0);
 const diameterAtom = atom(0);
 
 export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, ...props }) => {
-  const canvasRef = React.useRef(null);
+  const canvasRef = React.useRef<HTMLDivElement>(null);
   const contextMenuRef = React.useRef<HTMLDivElement>(null);
   const diameterDialogRef = React.useRef<HTMLDivElement>(null);
   const initialDiameter = React.useRef<number>(null);
@@ -112,7 +112,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    const canvas = ReactDOM.findDOMNode(canvasRef.current) as HTMLElement;
+    const canvas = canvasRef.current;
     const x = e.pageX - canvas.offsetLeft;
     const y = e.pageY - canvas.offsetTop;
     const closest = props.getClosest(x, y);
@@ -131,7 +131,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const canvas = ReactDOM.findDOMNode(canvasRef.current) as HTMLElement;
+    const canvas = canvasRef.current;
     const x = e.pageX - canvas.offsetLeft;
     const y = e.pageY - canvas.offsetTop;
     props.onMouseMove(x, y);
@@ -177,21 +177,25 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
         </Button>
       </Flex>
 
-      <Box
-        innerRef={canvasRef}
+      <div
+        ref={canvasRef}
         onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        flex="1"
-        bg="white"
-        border="1px solid #bbb"
-        position="relative"
-        style={{ overflow: 'hidden' }}
+        className={cx(
+          'flex-1',
+          'bg-white',
+          'border-solid',
+          'border-[1px]',
+          'border-[#bbb]',
+          'relative',
+          'overflow-hidden',
+        )}
       >
         {props.circles.map((c, i) => (
           <CircleComp key={i} circle={c} />
         ))}
-      </Box>
+      </div>
 
       {contextMenuVisible && (
         <BoxClickable
