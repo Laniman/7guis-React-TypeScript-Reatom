@@ -1,8 +1,7 @@
-import * as React from 'react'
+import React from 'react'
 import {Component} from 'react'
 import { reatomComponent, useAtom } from '@reatom/npm-react';
 import { mapState } from '@reatom/lens'
-import {css} from 'emotion'
 import { reatomTimer } from '@reatom/timer'
 import {Box, Button, Flex, Label, Stack, VFlex} from '../basic'
 import { cx } from "../utils";
@@ -60,7 +59,7 @@ export const Timer = reatomComponent(({ ctx }) => {
           {padder}
           <Label>Duration:{' '}</Label>
         </Stack>
-        <Box mr={1}/>
+        <Box className="mr-1" />
         <input
           type='range'
           min={0}
@@ -108,7 +107,7 @@ class GaugeTime extends Component<{
     return (
       <Flex className={cx('items-center')}>
         <Label>Elapsed Time:{' '}</Label>
-        <Box mr={1}/>
+        <Box className="mr-1" />
         <meter
           min={0}
           max={max}

@@ -1,85 +1,16 @@
 import React from 'react'
-import styled from 'react-emotion'
-import {css} from 'emotion'
-import {
-  background,
-  borderRadius,
-  borders,
-  bottom,
-  boxShadow,
-  color,
-  flex,
-  fontSize,
-  fontWeight,
-  height,
-  left,
-  maxHeight,
-  maxWidth,
-  minHeight,
-  minWidth,
-  position,
-  right,
-  space,
-  textAlign,
-  top,
-  util,
-  width,
-  zIndex,
-} from 'styled-system'
-import tag from 'clean-tag'
 import { cx } from './utils';
 import styles from './basic.module.css';
 
-const vspace = props => {
-  let v = props.vspace
-  const theme = util.fallbackTheme(props)
-  if (v == null) return undefined
-  if (theme && theme.space && theme.space[v]) {
-    v = util.px(theme.space[v])
-  }
-  return css`
-    &>* {
-      margin-top: ${v};
-    }
-    &>*:first-child {
-      margin-top: 0;
-    }
-  `
+interface BoxProps extends React.ComponentPropsWithRef<'div'> {
+  vspace?: string
+  hspace?: string
 }
 
-const hspace = props => {
-  let v = props.hspace
-  const theme = util.fallbackTheme(props)
-  if (v == null) return undefined
-  if (theme && theme.space && theme.space[v]) {
-    v = util.px(theme.space[v])
-  }
-  return css`
-    &>* {
-      margin-left: ${v};
-    }
-    &>*:first-child {
-      margin-left: 0;
-    }
-  `
-}
-
-// TODO: Is there an easy way to say 'apply all of the styles to this styled-component'?
-export const Box = styled(tag)`
-${vspace} ${hspace}
-${space}
-${width} ${height}
-${minWidth} ${maxWidth} ${minHeight} ${maxHeight}
-${fontSize}
-${fontWeight}
-${color}
-${flex}
-${textAlign}
-${background}
-${borders} ${borderRadius}
-${boxShadow}
-${position} ${zIndex} ${left} ${top} ${right} ${bottom}
-` as any
+export const Box = React.forwardRef<HTMLDivElement, BoxProps>(({ className, vspace, hspace, ...rest }, ref) => {
+  const style= { "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
+  return <div ref={ref} className={className} style={style} {...rest} />
+});
 
 interface FlexProps extends React.ComponentPropsWithRef<'div'> {
   vspace?: string
@@ -87,7 +18,7 @@ interface FlexProps extends React.ComponentPropsWithRef<'div'> {
 }
 
 export const Flex = React.forwardRef<HTMLDivElement, FlexProps>(({ className, vspace, hspace, ...rest }, ref) => {
-  const style={ "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
+  const style= { "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
   return <div ref={ref} className={cx(styles.flex, className)} style={style} {...rest} />
 });
 
@@ -98,7 +29,7 @@ interface VFlexProps extends React.ComponentPropsWithRef<'div'> {
 
 export const VFlex = React.forwardRef<HTMLDivElement, VFlexProps>(
   ({ className, vspace, hspace, ...rest }, ref) => {
-    const style={ "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
+    const style= { "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
     return <Flex ref={ref} className={cx(styles.VFlex, className)} style={style} {...rest} />;
   },
 );

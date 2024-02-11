@@ -86,7 +86,7 @@ export const Crud = reatomComponent(({ ctx }) => {
             </option>
           ))}
         </select>
-        <Box flex="1" vspace={1}>
+        <Box className="flex-1" vspace="4px">
           <Flex>
             <Stack>
               {padder}

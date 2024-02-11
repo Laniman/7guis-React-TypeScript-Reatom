@@ -60,7 +60,7 @@ export class Cells extends Component {
             'w-full',
             'border-collapse',
             'bg-white',
-            'border-1',
+            'border-[1px]',
             'border-solid',
             'border-[#bbb]',
           )}
@@ -72,8 +72,8 @@ export class Cells extends Component {
                 const start = 'A'.charCodeAt(0)
                 for (let i = start; i < start + cells[0].length; i++) {
                   result.push(
-                    <th key={i} style={{border: '1px solid #bbb'}}>
-                      <Box p={1}>{String.fromCharCode(i)}</Box>
+                    <th key={i} className="border-solid border-[1px] border-[#bbb]">
+                      <Box className="p-1">{String.fromCharCode(i)}</Box>
                     </th>
                   )
                 }

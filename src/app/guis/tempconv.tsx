@@ -11,10 +11,9 @@ function isNumeric(n: string): boolean {
 class TempConvPure extends Component<{
   celsius: string
   fahrenheit: string
-  onChangeCelsius: AnyListener
-  onChangeFahrenheit: AnyListener
+  onChangeCelsius: React.ChangeEventHandler<HTMLInputElement>
+  onChangeFahrenheit: React.ChangeEventHandler<HTMLInputElement>
 }> {
-
   getBackground = (mine: string, other: string): string => {
     if (mine === '') return undefined
     if (!isNumeric(mine)) return 'coral'

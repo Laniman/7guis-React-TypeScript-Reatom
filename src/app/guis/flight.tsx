@@ -73,7 +73,7 @@ class DateInput extends Component<{
   value: string;
   valid: boolean;
   disabled?: boolean;
-  onChange: AnyListener;
+  onChange: React.ChangeEventHandler<HTMLInputElement>
 }> {
   render() {
     const { value, valid, disabled, onChange } = this.props;
@@ -82,7 +82,7 @@ class DateInput extends Component<{
       <TextInput
         value={value}
         disabled={d}
-        style={{ background: !valid && !d ? 'coral' : undefined }}
+        className={cx(!valid && !d ? 'bg-coral' : undefined )}
         onChange={onChange}
       />
     );

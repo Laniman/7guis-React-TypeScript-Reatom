@@ -14,16 +14,21 @@ const CircleComp = reatomComponent<CircleCompProps>(({ ctx, ...props }) => {
 
   return (
     <Box
-      position="absolute"
-      left={ctx.spy(circle.x)}
-      top={ctx.spy(circle.y)}
-      width={ctx.spy(circle.diameter)}
-      height={ctx.spy(circle.diameter)}
-      border="1px solid #333"
-      borderRadius={100}
+      className={cx(
+        'absolute',
+        'border-[1px]',
+        'border-solid',
+        'border-[#333]',
+        'rounded-[100px]',
+        '-translate-x-1/2',
+        '-translate-y-1/2',
+        ctx.spy(circle.active) ? 'bg-[#eee]' : undefined,
+      )}
       style={{
-        transform: 'translate(-50%, -50%)',
-        background: ctx.spy(circle.active) ? '#eee' : undefined,
+        top: ctx.spy(circle.y),
+        left: ctx.spy(circle.x),
+        width: ctx.spy(circle.diameter),
+        height: ctx.spy(circle.diameter),
       }}
     />
   );
@@ -236,7 +241,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
             top: diameterDialogY,
           }}
         >
-          <Box flex="1">Adjust Diameter</Box>
+          <Box className="flex-1">Adjust Diameter</Box>
           <input
             type="range"
             min={2}

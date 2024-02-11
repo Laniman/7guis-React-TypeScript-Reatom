@@ -1,12 +1,9 @@
 import React from 'react';
 import './reset.css';
-import './css'
 import { createRoot } from 'react-dom/client';
 import { reatomContext } from '@reatom/npm-react'
 import { createCtx } from '@reatom/framework'
 import {observer} from 'mobx-react'
-import MobxDevTools from 'mobx-react-devtools'
-import {ThemeProvider} from 'emotion-theming'
 import {Counter} from './guis/counter'
 import {Flex} from './basic'
 import {TempConvAuto, TempConvManual} from './guis/tempconv'
@@ -17,12 +14,6 @@ import {CircleDrawerTraditional} from './guis/circles/drawer-traditional'
 import {Cells} from './guis/cells/cells'
 import {cx} from './utils'
 import './css.css';
-
-const theme = {
-  fontSizes: [
-    10, 12, 13, 16, 20, 24, 32, 48, 64
-  ],
-}
 
 const ctx = createCtx()
 
@@ -64,9 +55,7 @@ class App extends React.Component<{}> {
   render() {
     return (
       <reatomContext.Provider value={ctx}>
-      <ThemeProvider theme={theme}>
         <div className={cx('max-w-[40rem]', 'ml-auto', 'mr-auto', 'py-[1.5rem] px-[1.125rem]')}>
-          <MobxDevTools position={{bottom: 0, right: 0}}/>
           <h1>7GUIs in React/TypeScript/Reatom</h1>
           <div className="mb-8"/>
           <div className="text-[16px]">
@@ -89,7 +78,6 @@ class App extends React.Component<{}> {
           {this.renderGui('Circle Drawer Traditional', 'circles/drawer-traditional.tsx', <CircleDrawerTraditional/>)}
           {this.renderGui('Cells', 'cells/cells.tsx', <Cells/>)}
         </div>
-      </ThemeProvider>
       </reatomContext.Provider>
     )
   }
