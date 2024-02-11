@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { reatomContext } from '@reatom/npm-react'
 import { createCtx } from '@reatom/framework'
 import {observer} from 'mobx-react'
+import { configure } from "mobx";
 import {Counter} from './guis/counter'
 import {Flex} from './basic'
 import {TempConvAuto, TempConvManual} from './guis/tempconv'
@@ -14,6 +15,10 @@ import {CircleDrawerTraditional} from './guis/circles/drawer-traditional'
 import {Cells} from './guis/cells/cells'
 import {cx} from './utils'
 import './css.css';
+
+configure({
+  enforceActions: "never",
+});
 
 const ctx = createCtx()
 

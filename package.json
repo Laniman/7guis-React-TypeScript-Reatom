@@ -25,8 +25,8 @@
     "@reatom/timer": "^3.5.6",
     "@reatom/undo": "^3.3.1",
     "luxon": "^3.4.4",
-    "mobx": "^4.1.1",
-    "mobx-react": "^5.0.0",
+    "mobx": "^6.12.0",
+    "mobx-react": "^9.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
