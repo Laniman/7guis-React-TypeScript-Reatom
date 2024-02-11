@@ -111,12 +111,8 @@ cursor: pointer;
 user-select: none;
 ` as any
 
-export const Span = styled(Box.withComponent(tag.span))`
-display: inline-block;
-` as any
-
-export const Span2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
-  return <span className={`inline-block ${className}`} {...rest} />
+export const Span = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
+  return <span className={cx('inline-block', className)} {...rest} />
 }
 
 export class Stack extends Component {
@@ -158,7 +154,7 @@ export const TextInput2 = ({ className, ...rest}: React.ComponentPropsWithoutRef
 }
 
 export const Label = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
-  return <Span2 className={cx(styles.label, className)} {...rest} />
+  return <Span className={cx(styles.label, className)} {...rest} />
 }
 
 export const Button = ({ className, ...rest}: React.ComponentPropsWithoutRef<'button'>) => {
