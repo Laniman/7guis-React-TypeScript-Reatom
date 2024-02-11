@@ -1,10 +1,11 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { css } from 'emotion';
-import { Box, BoxClickable, Button, Flex, VFlex } from '../../basic';
-import { Circle } from './model';
 import { reatomComponent } from '@reatom/npm-react';
 import { atom, AtomMut } from '@reatom/framework';
-import ReactDOM from 'react-dom';
+import { Box, BoxClickable, Button, Flex, VFlex } from '../../basic';
+import { cx } from "../../utils";
+import { Circle } from './model';
 
 interface CircleCompProps {
   circle: Circle;
@@ -59,7 +60,7 @@ const diameterAtom = atom(0);
 
 export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, ...props }) => {
   const canvasRef = React.useRef(null);
-  const contextMenuRef = React.useRef(null);
+  const contextMenuRef = React.useRef<HTMLDivElement>(null);
   const diameterDialogRef = React.useRef(null);
   const initialDiameter = React.useRef<number>(null);
 
@@ -90,7 +91,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
     if (!(e.target instanceof Node)) return;
     if (
       !ctx.get(contextMenuVisibleAtom) ||
-      ReactDOM.findDOMNode(contextMenuRef.current).contains(e.target)
+      contextMenuRef.current.contains(e.target)
     ) {
       return;
     }
@@ -194,17 +195,20 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
 
       {contextMenuVisible && (
         <BoxClickable
-          innerRef={contextMenuRef}
+          ref={contextMenuRef}
+          style={{ left: contextMenuX, top: contextMenuY }}
           onClick={handleContextMenuAdjust}
-          p={1}
-          position="absolute"
-          left={contextMenuX}
-          top={contextMenuY}
-          width={120}
-          bg="#eee"
-          border="1px solid #888"
-          borderRadius="4px"
-          boxShadow="0px 1px 5px rgba(0,0,0,0.15)"
+          className={cx(
+            'p-1',
+            'absolute',
+            'w-[120px]',
+            'bg-[#eee]',
+            'border-[1px]',
+            'border-[#888]',
+            'border-solid',
+            'rounded-[4px]',
+            'shadow-[0px_1px_5px_rgba(0,0,0,0.15)]',
+          )}
         >
           Adjust Diameter
         </BoxClickable>

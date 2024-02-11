@@ -105,10 +105,11 @@ VFlex.defaultProps = {
   flexDirection: 'column'
 }
 
-export const BoxClickable = styled(Box)`
-cursor: pointer;
-user-select: none;
-` as any
+export const BoxClickable = React.forwardRef<HTMLDivElement, React.ComponentPropsWithRef<'div'>>(
+  ({ className, ...rest }, ref) => {
+    return <div ref={ref} className={cx('inline-block', className)} {...rest} />;
+  },
+);
 
 export const Span = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
   return <span className={cx('inline-block', className)} {...rest} />
