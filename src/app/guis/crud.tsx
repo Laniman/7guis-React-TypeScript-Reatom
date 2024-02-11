@@ -6,11 +6,7 @@ import { uuid } from '../utils';
 import { reatomComponent, useAtom, useAction } from '@reatom/npm-react';
 
 const padder = (
-  <Label
-    className={css`
-      visibility: hidden;
-    `}
-  >
+  <Label className="invisible">
     Surname:{' '}
   </Label>
 );

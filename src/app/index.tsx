@@ -1,12 +1,12 @@
 import React from 'react';
+import './reset.css';
+import './css'
 import { createRoot } from 'react-dom/client';
 import { reatomContext } from '@reatom/npm-react'
 import { createCtx } from '@reatom/framework'
 import {observer} from 'mobx-react'
 import MobxDevTools from 'mobx-react-devtools'
 import {ThemeProvider} from 'emotion-theming'
-import './css'
-import './css.css'
 import {Counter} from './guis/counter'
 import {Flex2} from './basic'
 import {TempConvAuto, TempConvManual} from './guis/tempconv'
@@ -16,6 +16,7 @@ import {Crud} from './guis/crud'
 import {CircleDrawerTraditional} from './guis/circles/drawer-traditional'
 import {Cells} from './guis/cells/cells'
 import {cx} from './utils'
+import './css.css';
 
 const theme = {
   fontSizes: [

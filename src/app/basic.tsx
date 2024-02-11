@@ -157,17 +157,10 @@ export const TextInput2 = ({ className, ...rest}: React.ComponentPropsWithoutRef
   return <input type="text" className={cx(styles.input, className)} {...rest} />
 }
 
-export const Label = styled(Span)`` as any
-Label.defaultProps = {
-  p: 1,
-  textAlign: 'center',
-  minWidth: '1rem',
-}
-
-export const Label2 = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
-  return <Span2 className={cx(['p-1', 'text-center', 'min-w-[1rem]'], className)} {...rest} />
+export const Label = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span'>) => {
+  return <Span2 className={cx(styles.label, className)} {...rest} />
 }
 
 export const Button = ({ className, ...rest}: React.ComponentPropsWithoutRef<'button'>) => {
-  return <button type="button" className={cx(styles.button, styles.clickable, 'py-1', 'px-2', 'bg-[#ccc]', 'text-center', 'min-w-[1rem]' , className)} {...rest} />
+  return <button type="button" className={cx(styles.button, styles.clickable, className)} {...rest} />
 }

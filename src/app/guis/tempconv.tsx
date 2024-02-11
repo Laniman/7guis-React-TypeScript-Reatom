@@ -3,7 +3,7 @@ import {Component} from 'react'
 import { atom } from '@reatom/framework'
 import {reatomComponent, useAtom} from '@reatom/npm-react'
 
-import {Flex2, Label2, TextInput2} from '../basic'
+import {Flex2, Label, TextInput2} from '../basic'
 
 function isNumeric(n: string): boolean {
   return !isNaN(parseFloat(n)) && isFinite(Number(n));
@@ -32,13 +32,13 @@ class TempConvPure extends Component<{
           value={celsius}
           onChange={onChangeCelsius}
         />
-        <Label2>Celsius = </Label2>
+        <Label>Celsius = </Label>
         <TextInput2
           style={{ background: this.getBackground(fahrenheit, celsius) }}
           value={fahrenheit}
           onChange={onChangeFahrenheit}
         />
-        <Label2>Fahrenheit</Label2>
+        <Label>Fahrenheit</Label>
       </Flex2>
     )
   }

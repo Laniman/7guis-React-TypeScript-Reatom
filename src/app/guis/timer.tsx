@@ -10,7 +10,7 @@ function clamp(num, min, max) {
   return num <= min ? min : num >= max ? max : num;
 }
 
-const padder = <Label className={css`visibility: hidden`}>Elapsed Time:{' '}</Label>
+const padder = <Label className="invisible">Elapsed Time:{' '}</Label>
 
 const MAX = 30000
 const INTERVAL = 100
@@ -93,7 +93,7 @@ class TextTime extends Component<{
     return (
       <Flex alignItems='center' className={css`user-select: none`}>
         {padder}
-        <Label flex='1' textAlign='left'>{formatted}</Label>
+        <Label className="flex-1 text-left">{formatted}</Label>
       </Flex>
     )
   }

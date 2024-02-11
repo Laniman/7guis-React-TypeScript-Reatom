@@ -1,5 +1,6 @@
 .clickable {
-  @apply cursor-pointer select-none;
+  cursor: pointer;
+  user-select: none;
 }
 
 .button {
@@ -15,6 +16,10 @@
   border-radius: 3px;
   cursor: default;
   box-shadow: 0 0 1px rgba(0,0,0,0.20);
+  padding: 0.250rem 0.500rem;
+  background-color: #ccc;
+  text-align: center;
+  min-width: 1rem;
 
   &:active {
     border-color:#705ebb;
@@ -30,6 +35,12 @@
     background-image: -webkit-linear-gradient(#fbf8f8 0%, #f0f0f0 30%, #e3e3e3 45%, #d7d7d7 60%, #cbc9c9 100%);
   }
 }
+
+.label {
+  padding: 0.250rem;
+  text-align: center;
+  min-width: 1rem;
+ }
 
 .input {
   box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
