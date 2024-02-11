@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "format": "npx prettier . --write"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.23.9",
