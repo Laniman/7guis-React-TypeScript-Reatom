@@ -1,6 +1,4 @@
-import * as React from 'react';
-import { Component } from 'react';
-import { css } from 'emotion';
+import React from 'react';
 import { reatomComponent, useAtom, useAction } from '@reatom/npm-react';
 import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from '../basic';
 import { cx, uuid } from '../utils';
@@ -61,8 +59,8 @@ export const Crud = reatomComponent(({ ctx }) => {
 
   return (
     <VFlex className={cx('min-w-[410px]')} vspace="8px">
-      <Flex hspace={1}>
-        <Flex flex="1">
+      <Flex hspace="4px">
+        <Flex className={cx('flex-1')}>
           <Label>
             Filter{'\u00A0'}prefix:{'\u00A0'}
           </Label>
@@ -72,19 +70,15 @@ export const Crud = reatomComponent(({ ctx }) => {
             onChange={(e) => setPrefix(e.target.value)}
           />
         </Flex>
-        <Box flex="1" />
+        <div className={cx('flex-1')} />
       </Flex>
 
-      <Flex hspace={1}>
+      <Flex hspace="4px">
         <select
           size={2}
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
-          className={css`
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          `}
+          className={cx('flex-1', 'border-solid', 'border-[1px]', 'border-[#ddd]', 'rounded-[5px]')}
         >
           {filtered.map(([id, x]) => (
             <option key={id} value={id}>
@@ -115,7 +109,7 @@ export const Crud = reatomComponent(({ ctx }) => {
         </Box>
       </Flex>
 
-      <Flex hspace={1}>
+      <Flex hspace="4px">
         <Button onClick={handleCreate}>Create</Button>
         <Button onClick={handleUpdate}>Update</Button>
         <Button onClick={handleDelete}>Delete</Button>

@@ -1,9 +1,8 @@
 import ReactDOM from 'react-dom'
-import * as React from 'react'
+import React from 'react'
 import {Component} from 'react'
 import {observer} from 'mobx-react'
 import {action, IObservableValue, observable} from 'mobx'
-import {css} from 'emotion'
 import {Box, Flex, Span, TextInput, VFlex} from '../../basic'
 import {cx} from "../../utils";
 import {Cell} from './cell'
@@ -56,13 +55,16 @@ export class Cells extends Component {
         vspace="4px"
       >
         <table
-          className={css`
-          table-layout: fixed;
-          width: 100%;
-          border-collapse: collapse;
-          background: white;
-          border: 1px solid #bbb;
-        `}>
+          className={cx(
+            'table-fixed',
+            'w-full',
+            'border-collapse',
+            'bg-white',
+            'border-1',
+            'border-solid',
+            'border-[#bbb]',
+          )}
+        >
           <tbody>
             <tr style={{background: '#f6f6f6', userSelect: 'none'}}>
               {(() => {
@@ -93,9 +95,12 @@ export class Cells extends Component {
                 {row.map((cell, j) =>
                   <td
                     key={j}
-                    className={css`
-                    border: 1px solid #bbb;
-                  `}>
+                    className={cx(
+                      'border-solid',
+                      'border-[1px]',
+                      'border-[#bbb]',
+                    )}
+                  >
                     <CellComp cell={cell}/>
                   </td>
                 )}
@@ -159,7 +164,7 @@ class CellComp extends Component<{
     const { cell, ...rest } = this.props
     return (
       <Flex
-        p={1} minHeight={32} alignItems='center' justifyContent='center'
+        className={cx('p-1', 'min-h-8', 'items-center', 'content-center')}
         onClick={this.handleClick}
         {...rest}
       >

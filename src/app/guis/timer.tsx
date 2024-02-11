@@ -55,7 +55,7 @@ export const Timer = reatomComponent(({ ctx }) => {
     >
       <GaugeTime max={max} value={elapsed}/>
       <TextTime value={elapsed}/>
-      <Flex alignItems='center'>
+      <Flex className={cx('items-center')}>
         <Stack>
           {padder}
           <Label>Duration:{' '}</Label>
@@ -67,9 +67,8 @@ export const Timer = reatomComponent(({ ctx }) => {
           max={MAX}
           value={max}
           onChange={(e) => setMax(Math.max(1, parseInt(e.target.value)))}
-          className={css`
-            flex: 1;
-          `}/>
+          className={cx('flex-1')}
+        />
       </Flex>
       <Button
         onClick={() => {
@@ -92,7 +91,7 @@ class TextTime extends Component<{
     const dezipart = Math.floor(value / 100) % 10
     const formatted = `${seconds}.${dezipart}s`
     return (
-      <Flex alignItems='center' className={css`user-select: none`}>
+      <Flex className={cx('items-center', 'select-none')}>
         {padder}
         <Label className="flex-1 text-left">{formatted}</Label>
       </Flex>
@@ -107,15 +106,15 @@ class GaugeTime extends Component<{
   render() {
     const { value, max } = this.props
     return (
-      <Flex alignItems='center'>
+      <Flex className={cx('items-center')}>
         <Label>Elapsed Time:{' '}</Label>
         <Box mr={1}/>
         <meter
-          min={0} max={max}
+          min={0}
+          max={max}
           value={value}
-          className={css`
-          flex: 1;
-        `}/>
+          className={cx('flex-1')}
+        />
       </Flex>
     )
   }

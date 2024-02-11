@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { css } from 'emotion';
 import { reatomComponent } from '@reatom/npm-react';
 import { atom, AtomMut } from '@reatom/framework';
 import { Box, BoxClickable, Button, Flex, VFlex } from '../../basic';
@@ -168,7 +166,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
 
   return (
     <VFlex className={cx('min-w-[410px]', 'h-[250px]')} vspace="4px">
-      <Flex hspace={1} alignSelf="center">
+      <Flex hspace="4px" className={cx('self-center')}>
         <Button disabled={!props.canUndo} onClick={() => props.onUndo()}>
           Undo
         </Button>
@@ -246,9 +244,7 @@ export const CircleDrawerPure = reatomComponent<CircleDrawerPureProps>(({ ctx, .
             value={diameter}
             onChange={handleChangeDiameter}
             onMouseUp={handleStopChangeDiameter}
-            className={css`
-              flex: 1;
-            `}
+            className={cx('flex-1')}
           />
         </VFlex>
       )}

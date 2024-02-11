@@ -2,7 +2,7 @@ import React from 'react'
 import {Component} from 'react'
 import { atom } from '@reatom/framework'
 import {reatomComponent, useAtom} from '@reatom/npm-react'
-import { Flex2, Label, TextInput } from '../basic'
+import { Flex, Label, TextInput } from '../basic'
 
 function isNumeric(n: string): boolean {
   return !isNaN(parseFloat(n)) && isFinite(Number(n));
@@ -25,7 +25,7 @@ class TempConvPure extends Component<{
   render() {
     const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit } = this.props
     return (
-      <Flex2 className="items-center">
+      <Flex className="items-center">
         <TextInput
           style={{ background: this.getBackground(celsius, fahrenheit) }}
           value={celsius}
@@ -38,7 +38,7 @@ class TempConvPure extends Component<{
           onChange={onChangeFahrenheit}
         />
         <Label>Fahrenheit</Label>
-      </Flex2>
+      </Flex>
     )
   }
 }

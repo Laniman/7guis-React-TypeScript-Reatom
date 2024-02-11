@@ -2,8 +2,6 @@ import React from 'react'
 import styled from 'react-emotion'
 import {css} from 'emotion'
 import {
-  alignItems,
-  alignSelf,
   background,
   borderRadius,
   borders,
@@ -11,12 +9,9 @@ import {
   boxShadow,
   color,
   flex,
-  flexDirection,
-  flexWrap,
   fontSize,
   fontWeight,
   height,
-  justifyContent,
   left,
   maxHeight,
   maxWidth,
@@ -86,17 +81,14 @@ ${boxShadow}
 ${position} ${zIndex} ${left} ${top} ${right} ${bottom}
 ` as any
 
-export const Flex = styled(Box)`
-display: flex;
-${alignItems}
-${justifyContent}
-${flexWrap}
-${flexDirection}
-${alignSelf}
-` as any
+interface FlexProps extends React.ComponentPropsWithRef<'div'> {
+  vspace?: string
+  hspace?: string
+}
 
-export const Flex2 = React.forwardRef<HTMLDivElement, React.ComponentPropsWithRef<'div'>>(({ className, ...rest }, ref) => {
-  return <div ref={ref} className={cx(styles.flex, className)} {...rest} />
+export const Flex = React.forwardRef<HTMLDivElement, FlexProps>(({ className, vspace, hspace, ...rest }, ref) => {
+  const style={ "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
+  return <div ref={ref} className={cx(styles.flex, className)} style={style} {...rest} />
 });
 
 interface VFlexProps extends React.ComponentPropsWithRef<'div'> {
@@ -107,7 +99,7 @@ interface VFlexProps extends React.ComponentPropsWithRef<'div'> {
 export const VFlex = React.forwardRef<HTMLDivElement, VFlexProps>(
   ({ className, vspace, hspace, ...rest }, ref) => {
     const style={ "--vspace": vspace, "--hspace": hspace } as React.CSSProperties;
-    return <Flex2 ref={ref} className={cx(styles.VFlex, className)} style={style} {...rest} />;
+    return <Flex ref={ref} className={cx(styles.VFlex, className)} style={style} {...rest} />;
   },
 );
 

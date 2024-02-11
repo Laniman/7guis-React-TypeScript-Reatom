@@ -8,7 +8,7 @@ import {observer} from 'mobx-react'
 import MobxDevTools from 'mobx-react-devtools'
 import {ThemeProvider} from 'emotion-theming'
 import {Counter} from './guis/counter'
-import {Flex2} from './basic'
+import {Flex} from './basic'
 import {TempConvAuto, TempConvManual} from './guis/tempconv'
 import {FlightBooker} from './guis/flight'
 import {Timer} from './guis/timer'
@@ -39,8 +39,8 @@ class App extends React.Component<{}> {
   renderGui(title: string, filename: string, comp: React.ReactNode) {
     return (
       <div className="mb-8">
-        <Flex2 className={cx('window', 'flex-col', 'inline-flex', 'text-[13px]')}>
-          <Flex2 className={cx('titlebar', 'p-1', 'text-center', 'items-center', 'relative', 'select-none', 'text-[13px]')}>
+        <Flex className={cx('window', 'flex-col', 'inline-flex', 'text-[13px]')}>
+          <Flex className={cx('titlebar', 'p-1', 'text-center', 'items-center', 'relative', 'select-none', 'text-[13px]')}>
             <div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               {title}
@@ -52,11 +52,11 @@ class App extends React.Component<{}> {
             >
               <IconFileCode color='#999' className="icon-file-code"/>
             </a>
-          </Flex2>
+          </Flex>
           <div className="p-2">
             {comp}
           </div>
-        </Flex2>
+        </Flex>
       </div>
     )
   }
