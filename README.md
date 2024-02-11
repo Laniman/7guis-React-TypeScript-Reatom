@@ -1,4 +1,4 @@
-Implementation of [7GUIs](http://eugenkiss.github.io/7guis/) with 
+Implementation of [7GUIs](http://eugenkiss.github.io/7guis/) with
 [React](https://react.dev/),
 [TypeScript](https://www.typescriptlang.org/) and
 [Reatom](https://www.reatom.dev/).

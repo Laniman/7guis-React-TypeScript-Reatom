@@ -1,29 +1,30 @@
-import React from 'react';
-import { reatomComponent, useAtom, useAction } from '@reatom/npm-react';
-import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from '../basic';
-import { cx, uuid } from '../utils';
+import React from "react";
+import { reatomComponent, useAtom, useAction } from "@reatom/npm-react";
+import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from "../basic";
+import { cx, uuid } from "../utils";
 
-const padder = (
-  <Label className="invisible">
-    Surname:{' '}
-  </Label>
-);
+const padder = <Label className="invisible">Surname: </Label>;
 
 export const Crud = reatomComponent(({ ctx }) => {
-  const [prefix, setPrefix, prefixAtom] = useAtom('');
-  const [firstName, setFirstName, firstNameAtom] = useAtom('');
-  const [lastName, setLastName, lastNameAtom] = useAtom('');
-  const [, , nameAtom] = useAtom((ctx) => `${ctx.spy(lastNameAtom)}, ${ctx.spy(firstNameAtom)}`);
-  const [selected, setSelected, selectedAtom] = useAtom('');
+  const [prefix, setPrefix, prefixAtom] = useAtom("");
+  const [firstName, setFirstName, firstNameAtom] = useAtom("");
+  const [lastName, setLastName, lastNameAtom] = useAtom("");
+  const [, , nameAtom] = useAtom(
+    (ctx) => `${ctx.spy(lastNameAtom)}, ${ctx.spy(firstNameAtom)}`,
+  );
+  const [selected, setSelected, selectedAtom] = useAtom("");
   const [, , dbAtom] = useAtom([
-    [uuid(), 'Emil, Hans'],
-    [uuid(), 'Mustermann, Max'],
-    [uuid(), 'Tisch, Roman'],
+    [uuid(), "Emil, Hans"],
+    [uuid(), "Mustermann, Max"],
+    [uuid(), "Tisch, Roman"],
   ]);
   const [filtered] = useAtom((ctx) =>
     ctx
       .spy(dbAtom)
-      .filter(([_, x]) => x.toLowerCase().indexOf(ctx.spy(prefixAtom).toLowerCase()) !== -1),
+      .filter(
+        ([_, x]) =>
+          x.toLowerCase().indexOf(ctx.spy(prefixAtom).toLowerCase()) !== -1,
+      ),
   );
 
   const handleCreate = useAction(
@@ -58,19 +59,19 @@ export const Crud = reatomComponent(({ ctx }) => {
   );
 
   return (
-    <VFlex className={cx('min-w-[410px]')} vspace="8px">
+    <VFlex className={cx("min-w-[410px]")} vspace="8px">
       <Flex hspace="4px">
-        <Flex className={cx('flex-1')}>
+        <Flex className={cx("flex-1")}>
           <Label>
-            Filter{'\u00A0'}prefix:{'\u00A0'}
+            Filter{"\u00A0"}prefix:{"\u00A0"}
           </Label>
           <TextInput
-            className={cx('w-0', 'flex-1')}
+            className={cx("w-0", "flex-1")}
             value={prefix}
             onChange={(e) => setPrefix(e.target.value)}
           />
         </Flex>
-        <div className={cx('flex-1')} />
+        <div className={cx("flex-1")} />
       </Flex>
 
       <Flex hspace="4px">
@@ -78,7 +79,13 @@ export const Crud = reatomComponent(({ ctx }) => {
           size={2}
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
-          className={cx('flex-1', 'border-solid', 'border-[1px]', 'border-[#ddd]', 'rounded-[5px]')}
+          className={cx(
+            "flex-1",
+            "border-solid",
+            "border-[1px]",
+            "border-[#ddd]",
+            "rounded-[5px]",
+          )}
         >
           {filtered.map(([id, x]) => (
             <option key={id} value={id}>
@@ -93,7 +100,7 @@ export const Crud = reatomComponent(({ ctx }) => {
               <Label>Name: </Label>
             </Stack>
             <TextInput
-              className={cx('flex-1')}
+              className={cx("flex-1")}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -101,7 +108,7 @@ export const Crud = reatomComponent(({ ctx }) => {
           <Flex>
             <Label>Surname: </Label>
             <TextInput
-              className={cx('flex-1')}
+              className={cx("flex-1")}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />

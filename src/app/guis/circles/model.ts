@@ -1,4 +1,4 @@
-import { Atom, AtomMut } from '@reatom/framework';
+import { Atom, AtomMut } from "@reatom/framework";
 
 export interface Circle {
   x: AtomMut<number>;

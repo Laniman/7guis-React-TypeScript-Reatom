@@ -1,9 +1,15 @@
-import React from 'react';
-import { atom, action, reatomArray, reatomBoolean, type AtomMut } from '@reatom/framework';
-import { reatomComponent, useAction } from '@reatom/npm-react';
-import { withUndo } from '@reatom/undo';
-import { CircleDrawerPure } from './frame';
-import type { Circle } from './model';
+import React from "react";
+import {
+  atom,
+  action,
+  reatomArray,
+  reatomBoolean,
+  type AtomMut,
+} from "@reatom/framework";
+import { reatomComponent, useAction } from "@reatom/npm-react";
+import { withUndo } from "@reatom/undo";
+import { CircleDrawerPure } from "./frame";
+import type { Circle } from "./model";
 
 const circlesAtom = reatomArray<Circle>().pipe(withUndo());
 const inContextModeAtom = reatomBoolean(false);
@@ -39,7 +45,9 @@ const getClosestAction = action((ctx, x: number, y: number): Circle => {
   let minDist = Number.MAX_VALUE;
   const circles = ctx.get(circlesAtom);
   for (const c of circles) {
-    const d = Math.sqrt(Math.pow(x - ctx.get(c.x), 2) + Math.pow(y - ctx.get(c.y), 2));
+    const d = Math.sqrt(
+      Math.pow(x - ctx.get(c.x), 2) + Math.pow(y - ctx.get(c.y), 2),
+    );
     if (d <= ctx.get(c.diameter) / 2 && d < minDist) {
       circle = c;
       minDist = d;

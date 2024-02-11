@@ -1,28 +1,29 @@
-import React from 'react'
-import {Component} from 'react'
-import { atom } from '@reatom/framework'
-import {reatomComponent, useAtom} from '@reatom/npm-react'
-import { Flex, Label, TextInput } from '../basic'
+import React from "react";
+import { Component } from "react";
+import { atom } from "@reatom/framework";
+import { reatomComponent, useAtom } from "@reatom/npm-react";
+import { Flex, Label, TextInput } from "../basic";
 
 function isNumeric(n: string): boolean {
   return !isNaN(parseFloat(n)) && isFinite(Number(n));
 }
 
 class TempConvPure extends Component<{
-  celsius: string
-  fahrenheit: string
-  onChangeCelsius: React.ChangeEventHandler<HTMLInputElement>
-  onChangeFahrenheit: React.ChangeEventHandler<HTMLInputElement>
+  celsius: string;
+  fahrenheit: string;
+  onChangeCelsius: React.ChangeEventHandler<HTMLInputElement>;
+  onChangeFahrenheit: React.ChangeEventHandler<HTMLInputElement>;
 }> {
   getBackground = (mine: string, other: string): string => {
-    if (mine === '') return undefined
-    if (!isNumeric(mine)) return 'coral'
-    if (!isNumeric(other)) return 'lightgray'
-    return undefined
-  }
+    if (mine === "") return undefined;
+    if (!isNumeric(mine)) return "coral";
+    if (!isNumeric(other)) return "lightgray";
+    return undefined;
+  };
 
   render() {
-    const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit } = this.props
+    const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit } =
+      this.props;
     return (
       <Flex className="items-center">
         <TextInput
@@ -38,13 +39,13 @@ class TempConvPure extends Component<{
         />
         <Label>Fahrenheit</Label>
       </Flex>
-    )
+    );
   }
 }
 
 export const TempConvManual = () => {
-  const [celsius, setCelsius] = useAtom('');
-  const [fahrenheit, setFahrenheit] = useAtom('');
+  const [celsius, setCelsius] = useAtom("");
+  const [fahrenheit, setFahrenheit] = useAtom("");
 
   const handleChangeCelsius = React.useCallback(
     (event) => {
@@ -80,8 +81,8 @@ export const TempConvManual = () => {
   );
 };
 
-const celsiusAtom = atom('');
-const fahrenheitAtom = atom('');
+const celsiusAtom = atom("");
+const fahrenheitAtom = atom("");
 
 celsiusAtom.onChange((ctx, value) => {
   if (!isNumeric(value)) return;
