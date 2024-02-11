@@ -115,25 +115,17 @@ export const Span = ({ className, ...rest}: React.ComponentPropsWithoutRef<'span
   return <span className={cx('inline-block', className)} {...rest} />
 }
 
-export class Stack extends Component {
-  render() {
-    const [first, ...rest] = React.Children.toArray(this.props.children)
-    if (first == null) return null
-    return (
-      <Box
-        className={css`
-        position: relative;
-        &>*:not(:first-child) {
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-      `}>
-        {first}
-        {rest && <Stack>{rest}</Stack>}
-      </Box>
-    )
-  }
+export const Stack = (props: React.PropsWithChildren) =>  {
+  const [first, ...rest] = React.Children.toArray(props.children)
+
+  if (first == null) return null
+
+  return (
+    <div className={styles.stack}>
+      {first}
+      {rest && <Stack>{rest}</Stack>}
+    </div>
+  );
 }
 
 export const TextInput = ({ className, ...rest}: React.ComponentPropsWithoutRef<'input'>) => {
