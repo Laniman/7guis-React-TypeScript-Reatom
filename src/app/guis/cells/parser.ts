@@ -1,4 +1,4 @@
-// TODO: I think a peg parser would be more suggestive / succinct http://sap.github.io/chevrotain/website/
+// TODO: I think a peg parser would be more suggestive / succinct
 
 import {
   Application,

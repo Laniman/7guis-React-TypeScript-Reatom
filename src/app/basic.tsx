@@ -96,14 +96,21 @@ export const Stack = (props: React.PropsWithChildren) => {
   );
 };
 
-export const TextInput = ({
-  className,
-  ...rest
-}: React.ComponentPropsWithoutRef<"input">) => {
+export const TextInput = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentPropsWithRef<"input">
+>(({ className, ...rest }, ref) => {
   return (
-    <input type="text" className={cx(styles.input, className)} {...rest} />
+    <input
+      ref={ref}
+      type="text"
+      className={cx(styles.input, className)}
+      {...rest}
+    />
   );
-};
+});
+
+TextInput.displayName = "TextInput";
 
 export const Label = ({
   className,

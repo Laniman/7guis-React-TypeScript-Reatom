@@ -1,12 +1,13 @@
-import { Cell } from "./cell";
+import { Atom, atom } from "@reatom/framework";
+import { CellType } from "./model";
 
-type Env = Array<Array<Cell>>;
+type Env = Array<Array<CellType>>;
 
 export abstract class Formula {
-  eval(cells: Env): number {
-    return 0;
+  eval(cells: Env): Atom<number> {
+    return atom(0);
   }
-  getReferences(cells: Env): Cell[] {
+  getReferences(cells: Env): CellType[] {
     return [];
   }
   get hasValue(): boolean {
@@ -37,8 +38,8 @@ export class Number extends Formula {
     return this.value.toString();
   }
 
-  eval(cells: Env): number {
-    return this.value;
+  eval(cells: Env): Atom<number> {
+    return atom(this.value);
   }
 }
 
@@ -56,11 +57,13 @@ export class Coord extends Formula {
     );
   }
 
-  eval(cells: Env): number {
-    return cells[this.row][this.col].value.get();
+  eval(cells: Env): Atom<number> {
+    return atom((ctx) => {
+      return ctx.spy(cells[this.row][this.col].value);
+    });
   }
 
-  getReferences(cells: Env): Cell[] {
+  getReferences(cells: Env): CellType[] {
     return [cells[this.row][this.col]];
   }
 }
@@ -81,17 +84,19 @@ export class Range extends Formula {
     return false;
   }
 
-  eval(): number {
+  eval(): never {
     throw new Error("Range cannot be evaluated!");
   }
 
-  getReferences(cells: Env): Cell[] {
+  getReferences(cells: Env): CellType[] {
     const result = [];
+
     for (let r = this.c1.row; r <= this.c2.row; r++) {
       for (let c = this.c1.col; c <= this.c2.col; c++) {
         result.push(cells[r][c]);
       }
     }
+
     return result;
   }
 }
@@ -109,11 +114,11 @@ const opTable: { [name: string]: Op } = {
 };
 
 const evalList = (cells: Env, args: Formula[]) => {
-  const result = [];
+  const result: Atom[] = [];
   for (const a of args) {
     if (a instanceof Range) {
       for (const c of a.getReferences(cells)) {
-        result.push(c.value.get());
+        result.push(c.value);
       }
     } else {
       result.push(a.eval(cells));
@@ -136,19 +141,27 @@ export class Application extends Formula {
     );
   }
 
-  eval(cells: Env): number {
+  eval(cells: Env): Atom<number> {
     try {
-      return opTable[this.name](evalList(cells, this.args));
+      return atom((ctx) => {
+        const list = evalList(cells, this.args);
+        const vals = list.map((item) => {
+          return ctx.spy(item);
+        });
+        return opTable[this.name](vals);
+      });
     } catch (e) {
-      return NaN;
+      return atom(NaN);
     }
   }
 
-  getReferences(cells: Env): Cell[] {
+  getReferences(cells: Env): CellType[] {
     const result = [];
+
     for (const a of this.args) {
       result.concat(a.getReferences(cells));
     }
+
     return result;
   }
 }
