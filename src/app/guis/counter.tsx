@@ -8,9 +8,12 @@ const countAtom = atom(0);
 
 export const Counter = reatomComponent(({ ctx }) => {
   return (
-    <Flex className={cx("items-center", "min-w-[200px]")}>
-      <Label className="flex-1">{ctx.spy(countAtom)}</Label>
+    <Flex data-testid="counter" className={cx("items-center", "min-w-[200px]")}>
+      <Label data-testid="count" className="flex-1">
+        {ctx.spy(countAtom)}
+      </Label>
       <Button
+        data-testid="button"
         className="flex-1"
         onClick={() => countAtom(ctx, (count) => count + 1)}
       >
