@@ -58,8 +58,13 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
   };
 
   return (
-    <VFlex className={cx("min-w-[200px]")} vspace="8px">
+    <VFlex
+      data-testid="flight-booker"
+      className={cx("min-w-[200px]")}
+      vspace="8px"
+    >
       <select
+        data-testid="flight-booker-type"
         value={type}
         onChange={(e) => setType(e.target.value as "one-way" | "return")}
       >
@@ -67,17 +72,23 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
         <option value="return">return flight</option>
       </select>
       <DateInput
+        testId="input-start"
         value={start}
         valid={validStart}
         onChange={(e) => setStart(e.target.value)}
       />
       <DateInput
+        testId="input-end"
         value={end}
         valid={validEnd}
         disabled={disabledEnd}
         onChange={(e) => setEnd(e.target.value)}
       />
-      <Button disabled={!bookable} onClick={handleBook}>
+      <Button
+        data-testid="button-book"
+        disabled={!bookable}
+        onClick={handleBook}
+      >
         Book
       </Button>
     </VFlex>
@@ -87,16 +98,18 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
 FlightBooker.displayName = "FlightBooker";
 
 class DateInput extends Component<{
+  testId: string;
   value: string;
   valid: boolean;
   disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }> {
   render() {
-    const { value, valid, disabled, onChange } = this.props;
+    const { value, valid, disabled, onChange, testId } = this.props;
     const d = disabled != null && disabled;
     return (
       <TextInput
+        data-testid={testId}
         value={value}
         disabled={d}
         className={cx(!valid && !d ? "bg-coral" : undefined)}
