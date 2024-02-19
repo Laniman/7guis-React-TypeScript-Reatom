@@ -1,5 +1,4 @@
 import React from "react";
-import { observer } from "mobx-react";
 import { Counter } from "./guis/counter";
 import { Flex } from "./basic";
 import { TempConvAuto, TempConvManual } from "./guis/tempconv";
@@ -62,7 +61,7 @@ const Gui = (props: {
   );
 };
 
-export const App = observer(() => {
+export const App = () => {
   return (
     <div
       className={cx(
@@ -111,6 +110,4 @@ export const App = observer(() => {
       <Gui title="Cells" filename="cells/cells.tsx" comp={<Cells />} />
     </div>
   );
-}) as React.FC;
-
-App.displayName = "App";
+};

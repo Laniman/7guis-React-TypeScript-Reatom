@@ -12,8 +12,6 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "declaration": false,
     "removeComments": true,
     "preserveConstEnums": true,
