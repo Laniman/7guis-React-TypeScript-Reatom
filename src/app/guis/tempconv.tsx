@@ -9,6 +9,7 @@ function isNumeric(n: string): boolean {
 }
 
 class TempConvPure extends Component<{
+  testId: string;
   celsius: string;
   fahrenheit: string;
   onChangeCelsius: React.ChangeEventHandler<HTMLInputElement>;
@@ -22,17 +23,19 @@ class TempConvPure extends Component<{
   };
 
   render() {
-    const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit } =
+    const { celsius, fahrenheit, onChangeCelsius, onChangeFahrenheit, testId } =
       this.props;
     return (
-      <Flex className="items-center">
+      <Flex data-testid={testId} className="items-center">
         <TextInput
+          data-testid="inputCelsius"
           style={{ background: this.getBackground(celsius, fahrenheit) }}
           value={celsius}
           onChange={onChangeCelsius}
         />
         <Label>Celsius = </Label>
         <TextInput
+          data-testid="inputFahrenheit"
           style={{ background: this.getBackground(fahrenheit, celsius) }}
           value={fahrenheit}
           onChange={onChangeFahrenheit}
@@ -77,6 +80,7 @@ export const TempConvManual = () => {
 
   return (
     <TempConvPure
+      testId="TempConvManual"
       celsius={celsius}
       fahrenheit={fahrenheit}
       onChangeCelsius={handleChangeCelsius}
@@ -103,6 +107,7 @@ fahrenheitAtom.onChange((ctx, value) => {
 export const TempConvAuto = reatomComponent(({ ctx }) => {
   return (
     <TempConvPure
+      testId="TempConvAuto"
       celsius={ctx.spy(celsiusAtom)}
       fahrenheit={ctx.spy(fahrenheitAtom)}
       onChangeCelsius={(e) => {

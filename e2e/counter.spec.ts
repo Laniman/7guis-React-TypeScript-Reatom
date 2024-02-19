@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.only("Counter", async ({ page }) => {
+test("Counter", async ({ page }) => {
   await page.goto("/");
   const widget = page.getByTestId("counter");
   const count = widget.getByTestId("count");
