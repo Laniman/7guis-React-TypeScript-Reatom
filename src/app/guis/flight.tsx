@@ -6,7 +6,7 @@ import { cx } from "../utils";
 
 const dateFormat = "dd.MM.yyyy";
 
-function getTimestamp(date: string): number {
+function getTimestamp(date: string): number | null {
   const parsed = DateTime.fromFormat(date, dateFormat);
   if (!parsed.isValid) return null;
   return parsed.valueOf();
@@ -35,7 +35,9 @@ export const FlightBooker = reatomComponent(({ ctx }) => {
   const [bookable] = useAtom((ctx) => {
     if (!ctx.spy(validStartAtom) || !ctx.spy(validEndAtom)) return false;
     if (ctx.spy(typeAtom) === "return") {
-      return getTimestamp(ctx.spy(startAtom)) <= getTimestamp(ctx.spy(endAtom));
+      return (
+        getTimestamp(ctx.spy(startAtom))! <= getTimestamp(ctx.spy(endAtom))!
+      );
     }
     return true;
   });

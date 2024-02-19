@@ -74,14 +74,18 @@ tokenizer.add("\\)", CLOSE_BRACKET);
 export class FormulaParser {
   formulaString = "";
   tokens = new Array<Token>();
-  lookahead: Token = null;
+  lookahead: Token = null!;
 
   parse(formulaString: string): Formula {
     this.formulaString = formulaString;
     try {
       tokenizer.tokenize(formulaString.replace(/\s+/g, ""));
-    } catch (e) {
-      console.log(e.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
     }
     this.tokens = tokenizer.tokens;
     if (this.tokens.length === 0) return EmptyFormula;

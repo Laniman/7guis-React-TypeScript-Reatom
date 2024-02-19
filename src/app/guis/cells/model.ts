@@ -6,7 +6,7 @@ import {
   type Ctx,
   type Atom,
 } from "@reatom/framework";
-import { Formula, Textual } from "./formula";
+import { type Formula, Textual } from "./formula";
 import { FormulaParser } from "./parser";
 
 export interface CellType {
@@ -26,7 +26,7 @@ const reatomCell = (): CellType => {
   const obj: CellType = {
     initialContent: "",
     content: atom(""),
-    formula: atom(new Textual("")),
+    formula: atom(new Textual("") as Formula),
     editing: atom((ctx) => ctx.spy(selectedCellAtom) === obj),
     value: atom((ctx) => {
       try {
@@ -70,9 +70,7 @@ const initialCells = Array.from({ length: 10 }, () =>
 
 export const cellsAtom = reatomArray(initialCells);
 
-export const selectedCellAtom = atom<null | CellType>(
-  null,
-) as AtomMut<CellType>;
+export const selectedCellAtom = atom<null | CellType>(null);
 
 export const storeAbort = action((ctx) => {
   const selected = ctx.get(selectedCellAtom);

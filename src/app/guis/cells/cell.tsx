@@ -17,19 +17,25 @@ export const Cell = reatomComponent(({ ctx, ...props }) => {
     cell.makeSelected(ctx);
   };
 
-  const handleEnterKeyPress = (e) => {
+  const handleEnterKeyPress: React.KeyboardEventHandler<HTMLInputElement> = (
+    e,
+  ) => {
     if (e.key === "Enter") {
       e.preventDefault();
       try {
         cell.applyChange(ctx);
         cell.unselect(ctx);
-      } catch (e) {
-        alert(e.message);
+      } catch (err) {
+        if (err instanceof Error) {
+          alert(err.message);
+        } else {
+          alert(err);
+        }
       }
     }
   };
 
-  const handleEscKeyUp = (e) => {
+  const handleEscKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Escape") {
       e.preventDefault();
       cell.abortEditing(ctx);

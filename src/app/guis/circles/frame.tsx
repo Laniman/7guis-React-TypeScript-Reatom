@@ -47,7 +47,7 @@ interface CircleDrawerPureProps {
   getInitialDiameter: () => number;
   onDiameterChange: (d: number) => void;
   onDiameterRelease: (initial: number, d: number) => void;
-  getClosest: (x: number, y: number) => Circle;
+  getClosest: (x: number, y: number) => Circle | null;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
@@ -67,7 +67,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const contextMenuRef = React.useRef<HTMLDivElement>(null);
   const diameterDialogRef = React.useRef<HTMLDivElement>(null);
-  const initialDiameter = React.useRef<number>(null);
+  const initialDiameter = React.useRef<number | null>(null);
 
   const contextMenuVisible = ctx.spy(contextMenuVisibleAtom);
   const contextMenuX = ctx.spy(contextMenuXAtom);
@@ -102,6 +102,8 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
 
   const handleDocumentContextMenuClick = (e: Event) => {
     if (!(e.target instanceof Node)) return;
+    if (!contextMenuRef.current) return;
+
     if (
       !ctx.get(contextMenuVisibleAtom) ||
       contextMenuRef.current.contains(e.target)
@@ -114,6 +116,8 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
 
   const handleDocumentDialogClick = (e: Event) => {
     if (!(e.target instanceof Node)) return;
+    if (!diameterDialogRef.current) return;
+
     if (
       !ctx.get(diameterDialogVisibleAtom) ||
       diameterDialogRef.current.contains(e.target)
@@ -126,6 +130,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const x = e.pageX - canvas.offsetLeft;
     const y = e.pageY - canvas.offsetTop;
     const closest = props.getClosest(x, y);
@@ -144,7 +149,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRef.current!;
     const x = e.pageX - canvas.offsetLeft;
     const y = e.pageY - canvas.offsetTop;
     props.onMouseMove(x, y);
@@ -176,7 +181,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
 
   const handleStopChangeDiameter = (e: React.FormEvent<HTMLInputElement>) => {
     props.onDiameterRelease(
-      initialDiameter.current,
+      initialDiameter.current!,
       parseInt(e.currentTarget.value),
     );
     initialDiameter.current = null;

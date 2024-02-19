@@ -14,7 +14,7 @@ class TempConvPure extends Component<{
   onChangeCelsius: React.ChangeEventHandler<HTMLInputElement>;
   onChangeFahrenheit: React.ChangeEventHandler<HTMLInputElement>;
 }> {
-  getBackground = (mine: string, other: string): string => {
+  getBackground = (mine: string, other: string): string | undefined => {
     if (mine === "") return undefined;
     if (!isNumeric(mine)) return "coral";
     if (!isNumeric(other)) return "lightgray";
@@ -47,7 +47,9 @@ export const TempConvManual = () => {
   const [celsius, setCelsius] = useAtom("");
   const [fahrenheit, setFahrenheit] = useAtom("");
 
-  const handleChangeCelsius = React.useCallback(
+  const handleChangeCelsius = React.useCallback<
+    React.ChangeEventHandler<HTMLInputElement>
+  >(
     (event) => {
       const value = event.currentTarget.value;
       setCelsius(value);
@@ -59,7 +61,9 @@ export const TempConvManual = () => {
     [setCelsius, setFahrenheit],
   );
 
-  const handleChangeFahrenheit = React.useCallback(
+  const handleChangeFahrenheit = React.useCallback<
+    React.ChangeEventHandler<HTMLInputElement>
+  >(
     (event) => {
       const value = event.currentTarget.value;
       setFahrenheit(value);

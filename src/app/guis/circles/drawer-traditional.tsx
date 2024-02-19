@@ -13,15 +13,15 @@ import type { Circle } from "./model";
 
 const circlesAtom = reatomArray<Circle>().pipe(withUndo());
 const inContextModeAtom = reatomBoolean(false);
-const selectedAtom = atom<Circle>(null) as AtomMut<Circle>;
-const hoveredAtom = atom<Circle>(null) as AtomMut<Circle>;
+const selectedAtom = atom<Circle | null>(null);
+const hoveredAtom = atom<Circle | null>(null);
 
 inContextModeAtom.onChange((ctx, prev) => {
   if (!prev) selectedAtom(ctx, null);
 });
 
 const reatomCircle = (x: number, y: number, diameter: number): Circle => {
-  const circle = {
+  const circle: Circle = {
     x: atom(x),
     y: atom(y),
     diameter: atom(diameter),
@@ -40,7 +40,7 @@ const reatomCircle = (x: number, y: number, diameter: number): Circle => {
   return circle;
 };
 
-const getClosestAction = action((ctx, x: number, y: number): Circle => {
+const getClosestAction = action((ctx, x: number, y: number): Circle | null => {
   let circle = null;
   let minDist = Number.MAX_VALUE;
   const circles = ctx.get(circlesAtom);
@@ -81,12 +81,12 @@ const mouseLeaveAction = action((ctx) => {
 const adjustAction = action(() => {});
 
 const changeDiameterAction = action((ctx, d: number) => {
-  const selected = ctx.get(selectedAtom);
+  const selected = ctx.get(selectedAtom)!;
   selected.diameter(ctx, d);
 });
 
 const stopChangeDiameterAction = action((ctx, initial: number, d: number) => {
-  const circle = ctx.get(selectedAtom);
+  const circle = ctx.get(selectedAtom)!;
   const circles = ctx.get(circlesAtom);
   const index = circles.indexOf(circle);
   circle.diameter(ctx, initial);
@@ -115,7 +115,7 @@ export const CircleDrawerTraditional = reatomComponent(({ ctx }) => {
       onCanvasClick={handleAddCircle}
       onCircleClick={handleContextMenu}
       onAdjustClick={handleAdjust}
-      getInitialDiameter={() => ctx.get(ctx.get(selectedAtom).diameter)}
+      getInitialDiameter={() => ctx.get(ctx.get(selectedAtom)!.diameter)}
       getClosest={getClosest}
       onDiameterChange={handleChangeDiameter}
       onDiameterRelease={handleStopChangeDiameter}

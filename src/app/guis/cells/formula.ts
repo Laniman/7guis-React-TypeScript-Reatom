@@ -156,7 +156,7 @@ export class Application extends Formula {
   }
 
   getReferences(cells: Env): CellType[] {
-    const result = [];
+    const result: CellType[] = [];
 
     for (const a of this.args) {
       result.concat(a.getReferences(cells));
