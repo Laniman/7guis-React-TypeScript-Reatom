@@ -6,7 +6,7 @@ import { reatomTimer } from "@reatom/timer";
 import { Box, Button, Flex, Label, Stack, VFlex } from "../basic";
 import { cx } from "../utils";
 
-function clamp(num, min, max) {
+function clamp(num: number, min: number, max: number) {
   return num <= min ? min : num >= max ? max : num;
 }
 
@@ -14,18 +14,18 @@ const MAX = 30000;
 const INTERVAL = 100;
 
 const timerAtom = reatomTimer({
-  name: "timer",
+  name: "timerAtom",
   interval: INTERVAL,
   delayMultiplier: 1,
   progressPrecision: 1,
   resetProgress: false,
 });
 
-const nowAtom = timerAtom.pipe(mapState(() => new Date().getTime(), "now"));
+const nowAtom = timerAtom.pipe(mapState(() => new Date().getTime(), "nowAtom"));
 
-const maxAtom = atom(MAX / 2, "max");
+const maxAtom = atom(MAX / 2, "maxAtom");
 
-const startAtom = atom(new Date().getTime(), "start");
+const startAtom = atom(new Date().getTime(), "startAtom");
 
 const elapsedAtom = atom((ctx) => {
   const max = ctx.spy(maxAtom);
@@ -33,7 +33,7 @@ const elapsedAtom = atom((ctx) => {
   if (new Date().getTime() - start >= max) return max;
   const now = ctx.spy(nowAtom);
   return clamp(now - start, 0, max);
-});
+}, "elapsedAtom");
 
 onConnect(maxAtom, (ctx) => {
   const max = ctx.get(maxAtom);
@@ -95,7 +95,7 @@ const TextTime = reatomComponent(({ ctx }) => {
       <Label className="flex-1 text-left">{formatted}</Label>
     </Flex>
   );
-}) as React.FC;
+}, "TextTime") as React.FC;
 
 TextTime.displayName = "TextTime";
 
@@ -112,6 +112,6 @@ const GaugeTime = reatomComponent(({ ctx }) => {
       />
     </Flex>
   );
-}) as React.FC;
+}, "GaugeTime") as React.FC;
 
 GaugeTime.displayName = "GaugeTime";
