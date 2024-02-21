@@ -1,29 +1,23 @@
 {
   "compilerOptions": {
+    "target": "ES2020",
     "module": "esnext",
-    "target": "es5",
-    "moduleResolution": "node",
+    "lib": ["ES2020", "dom"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
     "baseUrl": "src",
-    "jsx": "react",
     "outDir": "dist-ts/",
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
+    "strict": true,
+    "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "declaration": false,
     "removeComments": true,
     "preserveConstEnums": true,
-    "lib": [
-      "es2015",
-      "es2016",
-      "dom"
-    ]
+    "jsx": "react-jsx"
   },
-  "exclude": [
-    "dist*",
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["dist*", "node_modules"]
 }

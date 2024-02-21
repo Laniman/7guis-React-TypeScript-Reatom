@@ -1,115 +1,128 @@
-import * as React from 'react'
-import {Component} from 'react'
-import {observer} from 'mobx-react'
-import {computed, IObservableValue, observable} from 'mobx'
-import {css} from 'emotion'
-import {DateTime} from 'luxon'
-import {Box, Button, Flex, Label, Stack, TextInput, VFlex} from '../basic'
-import {uuid} from '../utils'
+import React from "react";
+import { reatomComponent, useAtom, useAction } from "@reatom/npm-react";
+import { Box, Button, Flex, Label, Stack, TextInput, VFlex } from "../basic";
+import { cx, uuid } from "../utils";
 
-const padder = <Label className={css`visibility: hidden`}>Surname:{' '}</Label>
+const padder = <Label className="invisible">Surname: </Label>;
 
-@observer
-export class Crud extends Component {
-
-  readonly prefix = observable.box('')
-  readonly firstName = observable.box('')
-  readonly lastName = observable.box('')
-  readonly name = computed(() => `${this.lastName}, ${this.firstName}`)
-  readonly selected = observable.box('')
-  readonly db = observable.array([
+export const Crud = reatomComponent(({ ctx }) => {
+  const [prefix, setPrefix, prefixAtom] = useAtom("");
+  const [firstName, setFirstName, firstNameAtom] = useAtom("");
+  const [lastName, setLastName, lastNameAtom] = useAtom("");
+  const [, , nameAtom] = useAtom(
+    (ctx) => `${ctx.spy(lastNameAtom)}, ${ctx.spy(firstNameAtom)}`,
+  );
+  const [selected, setSelected, selectedAtom] = useAtom("");
+  const [, , dbAtom] = useAtom([
     [uuid(), "Emil, Hans"],
     [uuid(), "Mustermann, Max"],
     [uuid(), "Tisch, Roman"],
-  ])
-  readonly filtered = computed(() =>
-    this.db.filter(([_, x]) => x.toLowerCase().indexOf(this.prefix.get().toLowerCase()) !== -1))
+  ]);
+  const [filtered] = useAtom((ctx) =>
+    ctx
+      .spy(dbAtom)
+      .filter(
+        ([_, x]) =>
+          x.toLowerCase().indexOf(ctx.spy(prefixAtom).toLowerCase()) !== -1,
+      ),
+  );
 
-  handleCreate = () => {
-    this.db.push([uuid(), this.name.get()])
-  }
+  const handleCreate = useAction(
+    (ctx) => dbAtom(ctx, (prev) => prev.concat([[uuid(), ctx.get(nameAtom)]])),
+    [dbAtom, nameAtom],
+  );
 
-  handleUpdate = () => {
-    const id = this.selected.get()
-    const index = this.db.findIndex(([i]) => i === id)
-    if (index === -1) return
-    this.db[index] = [uuid(), this.name.get()]
-  }
+  const handleUpdate = useAction(
+    (ctx) => {
+      const id = ctx.get(selectedAtom);
+      const index = ctx.get(dbAtom).findIndex(([i]) => i === id);
+      if (index === -1) return;
 
-  handleDelete = () => {
-    const id = this.selected.get()
-    const index = this.db.findIndex(([i]) => i === id)
-    if (index === -1) return
-    this.db.splice(index, 1)
-  }
+      dbAtom(ctx, (prev) => {
+        return prev.map((item, i) => {
+          if (i !== index) return item;
+          return [uuid(), ctx.get(nameAtom)];
+        });
+      });
+    },
+    [selectedAtom, dbAtom, nameAtom],
+  );
 
-  render() {
-    return (
-      <VFlex
-        minWidth='410px'
-        vspace={2}
-      >
-        <Flex hspace={1}>
-          <Flex flex='1'>
-            <Label>Filter{'\u00A0'}prefix:{'\u00A0'}</Label>
-            <TextField width='0' flex='1' value={this.prefix}/>
+  const handleDelete = useAction(
+    (ctx) => {
+      const id = ctx.get(selectedAtom);
+      const index = ctx.get(dbAtom).findIndex(([i]) => i === id);
+      if (index === -1) return;
+      dbAtom(ctx, (prev) => prev.filter((_, i) => i !== index));
+    },
+    [selectedAtom, dbAtom],
+  );
+
+  return (
+    <VFlex className={cx("min-w-[410px]")} vspace="8px">
+      <Flex hspace="4px">
+        <Flex className={cx("flex-1")}>
+          <Label>
+            Filter{"\u00A0"}prefix:{"\u00A0"}
+          </Label>
+          <TextInput
+            className={cx("w-0", "flex-1")}
+            value={prefix}
+            onChange={(e) => setPrefix(e.target.value)}
+          />
+        </Flex>
+        <div className={cx("flex-1")} />
+      </Flex>
+
+      <Flex hspace="4px">
+        <select
+          size={2}
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+          className={cx(
+            "flex-1",
+            "border-solid",
+            "border-[1px]",
+            "border-[#ddd]",
+            "rounded-[5px]",
+          )}
+        >
+          {filtered.map(([id, x]) => (
+            <option key={id} value={id}>
+              {x}
+            </option>
+          ))}
+        </select>
+        <Box className="flex-1" vspace="4px">
+          <Flex>
+            <Stack>
+              {padder}
+              <Label>Name: </Label>
+            </Stack>
+            <TextInput
+              className={cx("flex-1")}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
           </Flex>
-          <Box flex='1'/>
-        </Flex>
+          <Flex>
+            <Label>Surname: </Label>
+            <TextInput
+              className={cx("flex-1")}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </Flex>
+        </Box>
+      </Flex>
 
-        <Flex hspace={1}>
-          <select
-            size={2}
-            value={this.selected.get()}
-            onChange={(e) => this.selected.set(e.target.value)}
-            onClick={(e) => this.selected.set((e.target as any).value)}
-            className={css`
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          `}>
-            {this.filtered.get().map(([id, x]) =>
-              <option key={id} value={id}>{x}</option>
-            )}
-          </select>
-          <Box flex='1' vspace={1}>
-            <Flex>
-              <Stack>
-                {padder}
-                <Label>Name:{' '}</Label>
-              </Stack>
-              <TextField flex='1' value={this.firstName}/>
-            </Flex>
-            <Flex>
-              <Label>Surname:{' '}</Label>
-              <TextField flex='1' value={this.lastName}/>
-            </Flex>
-          </Box>
-        </Flex>
+      <Flex hspace="4px">
+        <Button onClick={handleCreate}>Create</Button>
+        <Button onClick={handleUpdate}>Update</Button>
+        <Button onClick={handleDelete}>Delete</Button>
+      </Flex>
+    </VFlex>
+  );
+}) as React.FC;
 
-        <Flex hspace={1}>
-          <Button onClick={this.handleCreate}>Create</Button>
-          <Button onClick={this.handleUpdate}>Update</Button>
-          <Button onClick={this.handleDelete}>Delete</Button>
-        </Flex>
-      </VFlex>
-    )
-  }
-}
-
-@observer
-class TextField extends Component<{
-  value?: IObservableValue<string>
-  [key: string]: any
-}> {
-  render() {
-    const { value, ...rest } = this.props
-    return (
-      <TextInput
-        value={value != null ? value.get() : undefined}
-        onChange={value != null ? (e) => value.set(e.target.value) : undefined}
-        {...rest}
-      />
-    )
-  }
-}
+Crud.displayName = "Crud";

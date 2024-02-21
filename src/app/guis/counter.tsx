@@ -1,18 +1,26 @@
-// Deliberately using a global counter to keep things simplistic
-// and to show an alternative style. If you want to have several
-// counters then the state should be bound to the component,
-// of course.
+import React from "react";
+import { atom } from "@reatom/framework";
+import { reatomComponent } from "@reatom/npm-react";
+import { Button, Flex, Label } from "../basic";
+import { cx } from "../utils";
 
-import * as React from 'react'
-import {observer} from 'mobx-react'
-import {observable} from 'mobx'
-import {Button, Flex, Label} from '../basic'
+const countAtom = atom(0);
 
-const count = observable.box(0)
+export const Counter = reatomComponent(({ ctx }) => {
+  return (
+    <Flex data-testid="counter" className={cx("items-center", "min-w-[200px]")}>
+      <Label data-testid="count" className="flex-1">
+        {ctx.spy(countAtom)}
+      </Label>
+      <Button
+        data-testid="button"
+        className="flex-1"
+        onClick={() => countAtom(ctx, (count) => count + 1)}
+      >
+        Count
+      </Button>
+    </Flex>
+  );
+}, "Counter") as React.FC;
 
-export const Counter = observer(() =>
-  <Flex alignItems='center' minWidth='200px'>
-    <Label flex='1'>{count.get()}</Label>
-    <Button flex='1' onClick={() => count.set(count.get() + 1)}>Count</Button>
-  </Flex>
-)
+Counter.displayName = "Counter";

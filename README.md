@@ -1,13 +1,8 @@
-Implementation of [7GUIs](http://eugenkiss.github.io/7guis/) with 
-[React](https://reactjs.org/),
+Implementation of [7GUIs](http://eugenkiss.github.io/7guis/) with
+[React](https://react.dev/),
 [TypeScript](https://www.typescriptlang.org/) and
-[MobX](https://mobx.js.org/).
+[Reatom](https://www.reatom.dev/).
 
-[**Live version**](https://eugenkiss.github.io/7guis-React-TypeScript-MobX/)
+[**Live version**](https://laniman.github.io/7guis-React-TypeScript-Reatom/)
 
-Run `make dev` for development mode.
-
-Additional notable libraries:
-
-- [styled-system](https://github.com/jxnblk/styled-system)
-- [emotion](https://emotion.sh/)
+Run `npm run dev` for development mode.
