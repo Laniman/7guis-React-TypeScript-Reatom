@@ -1,50 +1,50 @@
 import React from "react";
 import { reatomComponent } from "@reatom/npm-react";
-import { atom, AtomMut } from "@reatom/framework";
+import { atom, type AtomMut } from "@reatom/framework";
 import { Box, BoxClickable, Button, Flex, VFlex } from "../../basic";
 import { cx } from "../../utils";
-import { Circle } from "./model";
+import { type Circle, circlesAtom, getInitialDiameterAction } from "./model";
 
 interface CircleCompProps {
   circle: Circle;
 }
 
-const CircleComp = reatomComponent(({ ctx, ...props }) => {
-  const { circle } = props;
+const CircleComp = React.memo(
+  reatomComponent(({ ctx, ...props }) => {
+    const { circle } = props;
 
-  return (
-    <Box
-      className={cx(
-        "absolute",
-        "border-[1px]",
-        "border-solid",
-        "border-[#333]",
-        "rounded-[100px]",
-        "-translate-x-1/2",
-        "-translate-y-1/2",
-        ctx.spy(circle.active) ? "bg-[#eee]" : undefined,
-      )}
-      style={{
-        top: ctx.spy(circle.y),
-        left: ctx.spy(circle.x),
-        width: ctx.spy(circle.diameter),
-        height: ctx.spy(circle.diameter),
-      }}
-    />
-  );
-}) as React.FC<CircleCompProps>;
+    return (
+      <Box
+        className={cx(
+          "absolute",
+          "border-[1px]",
+          "border-solid",
+          "border-[#333]",
+          "rounded-[100px]",
+          "-translate-x-1/2",
+          "-translate-y-1/2",
+          ctx.spy(circle.active) ? "bg-[#eee]" : undefined,
+        )}
+        style={{
+          top: ctx.spy(circle.y),
+          left: ctx.spy(circle.x),
+          width: ctx.spy(circle.diameter),
+          height: ctx.spy(circle.diameter),
+        }}
+      />
+    );
+  }) as React.FC<CircleCompProps>,
+);
 
 CircleComp.displayName = "CircleComp";
 
 interface CircleDrawerPureProps {
-  circles: Array<Circle>;
   inContextMode: AtomMut<boolean>;
   onMouseMove: (x: number, y: number) => void;
   onMouseLeave: () => void;
   onCanvasClick: (x: number, y: number) => void;
   onCircleClick: (c: Circle) => void;
   onAdjustClick: () => void;
-  getInitialDiameter: () => number;
   onDiameterChange: (d: number) => void;
   onDiameterRelease: (initial: number, d: number) => void;
   getClosest: (x: number, y: number) => Circle | null;
@@ -165,7 +165,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
     diameterDialogVisibleAtom(ctx, true);
     diameterDialogXAtom(ctx, contextMenuX);
     diameterDialogYAtom(ctx, contextMenuY);
-    const d = props.getInitialDiameter();
+    const d = getInitialDiameterAction(ctx);
     diameterAtom(ctx, d);
     initialDiameter.current = d;
   };
@@ -190,10 +190,10 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
   return (
     <VFlex className={cx("min-w-[410px]", "h-[250px]")} vspace="4px">
       <Flex hspace="4px" className={cx("self-center")}>
-        <Button disabled={!props.canUndo} onClick={() => props.onUndo()}>
+        <Button disabled={!props.canUndo} onClick={props.onUndo}>
           Undo
         </Button>
-        <Button disabled={!props.canRedo} onClick={() => props.onRedo()}>
+        <Button disabled={!props.canRedo} onClick={props.onRedo}>
           Redo
         </Button>
       </Flex>
@@ -213,7 +213,7 @@ export const CircleDrawerPure = reatomComponent(({ ctx, ...props }) => {
           "overflow-hidden",
         )}
       >
-        {props.circles.map((c, i) => (
+        {ctx.spy(circlesAtom).map((c, i) => (
           <CircleComp key={i} circle={c} />
         ))}
       </div>
